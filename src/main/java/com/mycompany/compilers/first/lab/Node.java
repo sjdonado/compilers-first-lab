@@ -10,16 +10,25 @@ package com.mycompany.compilers.first.lab;
  * @author sjdonado
  */
 public class Node {
-    private final Node rightChild;
-    private final Node leftChild;
-    private char token;
+    private Node rightChild;
+    private Node leftChild;
     
-    public Node(Node leftNode, Node rightNode, char token) {
-        this.rightChild = leftNode;
-        this.leftChild = rightNode;
+    private final char token;
+    
+    public Node(char token) {
+        this.rightChild = null;
+        this.leftChild = null;
         this.token = token;
     }
-    
+
+    public void setRightChild(Node rightChild) {
+        this.rightChild = rightChild;
+    }
+
+    public void setLeftChild(Node leftChild) {
+        this.leftChild = leftChild;
+    }
+
     public Node getRightChild() {
         return rightChild;
     }
@@ -31,5 +40,4 @@ public class Node {
     public char getToken() {
         return token;
     }
-
 }

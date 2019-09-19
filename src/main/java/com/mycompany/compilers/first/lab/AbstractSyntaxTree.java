@@ -43,7 +43,7 @@ public class AbstractSyntaxTree {
         return Math.max(getHeight(root.getLeftChild()), getHeight(root.getRightChild())) + 1;
     }
     
-//    Position: right => 0, left => 1
+//    Position: left => 1, right => 0
     private void buildTreeFromRegex(Node root, List<Character> regexList, int index, int position) {
         Node newChild;
         if (index >= 0 && regexList.size() > 0) {
@@ -51,32 +51,44 @@ public class AbstractSyntaxTree {
                 .log(Level.INFO, "RegexList => {0}, index => {1}", new Object[]{regexList, index});
             Character character = regexList.get(index);
             int syntaxTokenPos = Arrays.binarySearch(SYNTAX_TOKENS, character);
-            
             switch (syntaxTokenPos) {
                 case 0:
-                    buildTreeFromRegex(root, regexList.subList(0, index), index - 1, 1);
+                    buildTreeFromRegex(root, regexList.subList(0, index), index - 1, position);
                     break;
                 case 1:
-                    int leftLimit = searchSyntaxToken(regexList.subList(0, index), SYNTAX_TOKENS[0]);
-                    int breakPoint = searchSyntaxToken(regexList.subList(leftLimit, index), SYNTAX_TOKENS[4]);
+                    int leftLimit = regexList.subList(0, index).indexOf(SYNTAX_TOKENS[0]);
+                    int breakPoint = regexList.subList(leftLimit, index).indexOf(SYNTAX_TOKENS[4]);
+                    Logger.getLogger(AbstractSyntaxTree.class.getName())
+                            .log(Level.INFO, "leftLimit => {0}, breakPoint => {1}", new Object[]{leftLimit, leftLimit + breakPoint});
+                    
+                    if (leftLimit > 0) {
+                        buildTreeFromRegex(root, regexList.subList(0, leftLimit), leftLimit - 1, 1);
+                    }
+                    
                     if (breakPoint != -1) {
+                        breakPoint = leftLimit + breakPoint;
                         Node breakPointNode = new Node(SYNTAX_TOKENS[4]);
                         setNodeByPosition(root, breakPointNode, position);
 
                         List<Character> rightRegex = regexList.subList(breakPoint + 1, index);
+//                        Logger.getLogger(AbstractSyntaxTree.class.getName())
+//                            .log(Level.INFO, "rightRegex => {0}, index => {1}", new Object[]{rightRegex, index});
                         buildTreeFromRegex(breakPointNode, rightRegex, rightRegex.size() - 1, 0);
 
-                        List<Character> letfRegex = regexList.subList(leftLimit, breakPoint);
+                        List<Character> letfRegex = regexList.subList(leftLimit + 1, breakPoint);
+//                        Logger.getLogger(AbstractSyntaxTree.class.getName())
+//                            .log(Level.INFO, "letfRegex => {0}, index => {1}", new Object[]{letfRegex, index});
                         buildTreeFromRegex(breakPointNode, letfRegex, letfRegex.size() - 1, 1);
-                    } else {
-                        List<Character> subRegex = regexList.subList(leftLimit, index);
-                        buildTreeFromRegex(new Node(character), subRegex, index - 1, 1);
                     }
+                    break;
+                case (2 | 3 | 5):
+                    newChild = new Node(character);
+                    setNodeByPosition(root, newChild, 1);
+                    buildTreeFromRegex(newChild, regexList.subList(0, index), index - 1, 0);
                     break;
                 default:
                     newChild = new Node(character);
                     setNodeByPosition(root, newChild, position);
-
                     buildTreeFromRegex(newChild, regexList.subList(0, index), index - 1, 1);
                     break;
             }
@@ -98,14 +110,4 @@ public class AbstractSyntaxTree {
         }
     }
     
-    private int searchSyntaxToken(List<Character> regexList, char syntaxToken) {
-        int index = 0;
-        while (index < regexList.size()) {
-            if (regexList.get(index) == syntaxToken) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
-    }
 }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class AbstractSyntaxTree {
     private Node root;
     private static final char[] SYNTAX_TOKENS = new char[] {
-        '(', ')', '*', '+', '|', '?'
+        '(', ')', '*', '+', '|', '?', '.'
     };
     
     public AbstractSyntaxTree(String regex) {
@@ -29,8 +29,9 @@ public class AbstractSyntaxTree {
             .collect(Collectors.toList())
         );
         
-        this.root = new Node('#');
-        buildTreeFromRegex(root, regexList, regexList.size() - 1, 1);
+        this.root = addConcatNode('#');
+        buildTreeFromRegex(this.root, regexList, regexList.size() - 1, 1);
+
         printTree(this.root);
     }
     
@@ -79,15 +80,24 @@ public class AbstractSyntaxTree {
 //                        Logger.getLogger(AbstractSyntaxTree.class.getName())
 //                            .log(Level.INFO, "letfRegex => {0}, index => {1}", new Object[]{letfRegex, index});
                         buildTreeFromRegex(breakPointNode, letfRegex, letfRegex.size() - 1, 1);
+                    } else {
+                        buildTreeFromRegex(root, regexList.subList(0, index), index - 1, 1);
                     }
                     break;
-                case (2 | 3 | 5):
+                case 2:
+                case 3:
+                case 5:
                     newChild = new Node(character);
-                    setNodeByPosition(root, newChild, 1);
+                    setNodeByPosition(root, newChild, position);
                     buildTreeFromRegex(newChild, regexList.subList(0, index), index - 1, 0);
                     break;
                 default:
-                    newChild = new Node(character);
+                    syntaxTokenPos = new String(SYNTAX_TOKENS).indexOf(root.getToken());
+                    if (syntaxTokenPos >= 0 && syntaxTokenPos <= 5) {
+                        newChild = new Node(character);
+                    } else {
+                        newChild = addConcatNode(character);
+                    }
                     setNodeByPosition(root, newChild, position);
                     buildTreeFromRegex(newChild, regexList.subList(0, index), index - 1, 1);
                     break;
@@ -108,6 +118,13 @@ public class AbstractSyntaxTree {
         } else {
             root.setLeftChild(child);
         }
+    }
+    
+    private Node addConcatNode(Character character) {
+        Node concat = new Node(SYNTAX_TOKENS[6]);
+        Node newChild = new Node(character);
+        concat.setRightChild(newChild);
+        return concat;
     }
     
 }

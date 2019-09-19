@@ -21,13 +21,8 @@ public class AbstractSyntaxTree {
     private static final char[] SYNTAX_TOKENS = new char[] {
         '(', ')', '*', '+', '|', '?'
     };
-//    private ArrayList<Node> nodes;
     
     public AbstractSyntaxTree(String regex) {
-//        this.nodes = new ArrayList<>();
-//        StringBuilder input = new StringBuilder(); 
-//        input.append(regex);
-
         List<Character> regexList = new ArrayList<>(
             regex.chars()
             .mapToObj(e -> (char) e)
@@ -55,33 +50,35 @@ public class AbstractSyntaxTree {
             Logger.getLogger(AbstractSyntaxTree.class.getName())
                 .log(Level.INFO, "RegexList => {0}, index => {1}", new Object[]{regexList, index});
             Character character = regexList.get(index);
-            if (Arrays.binarySearch(SYNTAX_TOKENS, character) == 1) {
-                newChild = new Node(character);
-                setNodeByPosition(root, newChild, position);
+            int syntaxTokenPos = Arrays.binarySearch(SYNTAX_TOKENS, character);
+            
+            switch (syntaxTokenPos) {
+                case 0:
+                    buildTreeFromRegex(root, regexList.subList(0, index), index - 1, 1);
+                    break;
+                case 1:
+                    int leftLimit = searchSyntaxToken(regexList.subList(0, index), SYNTAX_TOKENS[0]);
+                    int breakPoint = searchSyntaxToken(regexList.subList(leftLimit, index), SYNTAX_TOKENS[4]);
+                    if (breakPoint != -1) {
+                        Node breakPointNode = new Node(SYNTAX_TOKENS[4]);
+                        setNodeByPosition(root, breakPointNode, position);
 
-                int leftLimit = searchSyntaxToken(regexList.subList(0, index), SYNTAX_TOKENS[0]);
-                int breakPoint = searchSyntaxToken(regexList.subList(leftLimit, index), SYNTAX_TOKENS[4]);
-                if (breakPoint != -1) {
-                    Node breakPointNode = new Node(SYNTAX_TOKENS[4]);
-                    newChild.setLeftChild(breakPointNode);
-                    List<Character> rightRegex = regexList.subList(breakPoint + 1, index);
-                    buildTreeFromRegex(breakPointNode, rightRegex, rightRegex.size() - 1, 0);
-//                        breakPointNode.setRightChild();
+                        List<Character> rightRegex = regexList.subList(breakPoint + 1, index);
+                        buildTreeFromRegex(breakPointNode, rightRegex, rightRegex.size() - 1, 0);
 
-                    List<Character> letfRegex = regexList.subList(leftLimit, breakPoint);
-                    buildTreeFromRegex(breakPointNode, letfRegex, letfRegex.size() - 1, 1);
-    //                    newChildNode = buildTreeFromRegex(letfRegex);
-    //                    breakPointNode.setLeftChild(newChildNode);
-                } else {
-                    List<Character> subRegex = regexList.subList(leftLimit, index);
-                    buildTreeFromRegex(new Node(character), subRegex, index - 1, 1);
-    //                subParent.setRightChild(newRoot);
-                }
-            } else {
-                newChild = new Node(character);
-                setNodeByPosition(root, newChild, position);
-                
-                buildTreeFromRegex(newChild, regexList.subList(0, index), index - 1, 1);
+                        List<Character> letfRegex = regexList.subList(leftLimit, breakPoint);
+                        buildTreeFromRegex(breakPointNode, letfRegex, letfRegex.size() - 1, 1);
+                    } else {
+                        List<Character> subRegex = regexList.subList(leftLimit, index);
+                        buildTreeFromRegex(new Node(character), subRegex, index - 1, 1);
+                    }
+                    break;
+                default:
+                    newChild = new Node(character);
+                    setNodeByPosition(root, newChild, position);
+
+                    buildTreeFromRegex(newChild, regexList.subList(0, index), index - 1, 1);
+                    break;
             }
         }
     }

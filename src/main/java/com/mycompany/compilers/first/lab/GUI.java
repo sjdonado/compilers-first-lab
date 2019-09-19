@@ -20,6 +20,10 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
+        jPanelTree.setBorder(new EmptyBorder(5, 5, 5, 5));
+        jPanelTree.setLayout(new BorderLayout(0, 0));
+//        jPanelTree.setSize(800, 700);
+//        setSize(800, 800);
     }
 
     /**
@@ -57,7 +61,7 @@ public class GUI extends javax.swing.JFrame {
         );
         jPanelTreeLayout.setVerticalGroup(
             jPanelTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 356, Short.MAX_VALUE)
+            .addGap(0, 421, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -71,10 +75,10 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(regex, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(regex, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
-                        .addGap(0, 215, Short.MAX_VALUE)))
+                        .addGap(0, 49, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -95,9 +99,10 @@ public class GUI extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JPanel drawTree = new DrawTree(new AbstractSyntaxTree(regex.getText()));
-        jPanelTree.setBorder(new EmptyBorder(5, 5, 5, 5));
-        jPanelTree.setLayout(new BorderLayout(0, 0));
+        jPanelTree.removeAll();
         jPanelTree.add(drawTree);
+        revalidate();
+        repaint();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

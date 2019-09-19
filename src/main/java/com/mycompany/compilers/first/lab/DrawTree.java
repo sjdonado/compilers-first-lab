@@ -24,10 +24,10 @@ public class DrawTree extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        g.setFont(new Font("Tahoma", Font.BOLD, 15));
+        g.setFont(new Font("Tahoma", Font.BOLD, 18));
         //g.drawString(String.valueOf(tree.root.data), this.getWidth()/2, 30);
 //        drawNode(g, tree.getRoot(), 100, 50, 2);
-        drawTree(g, 100, getWidth(), 50, getHeight() / tree.getHeight(tree.getRoot()), tree.getRoot());
+        drawTree(g, 0, getWidth(), 0, getHeight() / tree.getHeight(tree.getRoot()), tree.getRoot());
     }
 
 //    public void drawNode(Graphics g,Node n,int w,int h,int q){
@@ -46,16 +46,32 @@ public class DrawTree extends JPanel {
 	
     public void drawTree(Graphics g, int startWidth, int endWidth,
         int startHeight, int level, Node node) {
+        int nextStartWidth, nextEndWidth, nextStartHeight;
         String data = String.valueOf(node.getToken());
 //        g.setFont(new Font("Tahoma", Font.BOLD, 20));
         FontMetrics fm = g.getFontMetrics();
         int dataWidth = fm.stringWidth(data);
-        g.drawString(data, (startWidth + endWidth) / 2 - dataWidth / 2, startHeight + level / 2);
-
-        if (node.getLeftChild() != null)            
-            drawTree(g, startWidth, (startWidth + endWidth) / 2, startHeight + level, level, node.getLeftChild());
+        int x = (startWidth + endWidth) / 2 - dataWidth / 2;
+        int y = startHeight + level;
         
-        if (node.getRightChild() != null)
-            drawTree(g, (startWidth + endWidth) / 2, endWidth, startHeight + level, level, node.getRightChild());
+        g.drawString(data, x, y);
+
+        if (node.getLeftChild() != null) {
+            nextStartWidth = startWidth;
+            nextEndWidth = (startWidth + endWidth) / 2;
+            nextStartHeight = startHeight + level;
+            
+            g.drawLine(x, y, (nextStartWidth + nextEndWidth) / 2 - nextStartWidth / 2, nextStartHeight + level);
+            drawTree(g, nextStartWidth, nextEndWidth, nextStartHeight, level + 1, node.getLeftChild());
+        }           
+        
+        if (node.getRightChild() != null) {
+            nextStartWidth = (startWidth + endWidth) / 2;
+            nextEndWidth = endWidth;
+            nextStartHeight = startHeight + level;
+
+            g.drawLine(x, y, (nextStartWidth + nextEndWidth) / 2 - nextStartWidth / 2, nextStartHeight + level);
+            drawTree(g, nextStartWidth, nextEndWidth, nextStartHeight, level + 1, node.getRightChild());
+        }
     }
 }

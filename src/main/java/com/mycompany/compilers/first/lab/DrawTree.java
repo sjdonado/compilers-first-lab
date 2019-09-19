@@ -37,12 +37,15 @@ public class DrawTree extends JPanel {
         int startHeight, int levelHeight, Node node) {
         int nextStartWidth, nextEndWidth, nextStartHeight;
         String data = String.valueOf(node.getToken());
-        FontMetrics fm = g.getFontMetrics();
-        int dataWidth = fm.stringWidth(data);
+        int dataWidth = this.fm.stringWidth(data);
         int x = getNodeXPosition(startWidth, endWidth) - dataWidth / 2;
         int y = startHeight + levelHeight + this.fm.getHeight() / 2;
         
         g.drawString(data, x, y);
+        
+//        int[] firstPositions = this.tree.getFirstPositions(node);
+//        int[] lastPositions = null;
+//        int[] nextPositions = null;
 
         if (node.getLeftChild() != null) {
             nextStartWidth = startWidth;

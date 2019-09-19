@@ -12,12 +12,17 @@ package com.mycompany.compilers.first.lab;
 public class Node {
     private Node rightChild;
     private Node leftChild;
-    
     private final char token;
+    private int [] firstPositions;
+    private int[] lastPositions;
+    private int[] nextPositions;
     
     public Node(char token) {
         this.rightChild = null;
         this.leftChild = null;
+        this.firstPositions = null;
+        this.lastPositions = null;
+        this.nextPositions = null;
         this.token = token;
     }
 
@@ -28,7 +33,7 @@ public class Node {
     public void setLeftChild(Node leftChild) {
         this.leftChild = leftChild;
     }
-
+    
     public Node getRightChild() {
         return rightChild;
     }

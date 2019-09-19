@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -18,11 +21,13 @@ import java.util.stream.Collectors;
  */
 public class AbstractSyntaxTree {
     private Node root;
+    private String regex;
     private static final char[] SYNTAX_TOKENS = new char[] {
         '(', ')', '*', '+', '|', '?', '.'
     };
     
     public AbstractSyntaxTree(String regex) {
+        this.regex = regex + "#";
         List<Character> regexList = new ArrayList<>(
             regex.chars()
             .mapToObj(e -> (char) e)
@@ -31,17 +36,7 @@ public class AbstractSyntaxTree {
         
         this.root = addConcatNode('#');
         buildTreeFromRegex(this.root, regexList, regexList.size() - 1, 1);
-
         printTree(this.root);
-    }
-    
-    public Node getRoot() {
-        return this.root;
-    }
-    
-    public int getHeight(Node root) {
-        if (root == null) return 0;
-        return Math.max(getHeight(root.getLeftChild()), getHeight(root.getRightChild())) + 1;
     }
     
 //    Position: left => 1, right => 0
@@ -105,6 +100,15 @@ public class AbstractSyntaxTree {
         }
     }
     
+    public Node getRoot() {
+        return this.root;
+    }
+    
+    public int getHeight(Node root) {
+        if (root == null) return 0;
+        return Math.max(getHeight(root.getLeftChild()), getHeight(root.getRightChild())) + 1;
+    }
+    
     public void printTree(Node n) {
         if (n == null) return;
         printTree(n.getLeftChild());
@@ -127,4 +131,61 @@ public class AbstractSyntaxTree {
         return concat;
     }
     
+    public ArrayList<String[]> getTreePositions() {
+        ArrayList<String[]> positions = new ArrayList<>();
+        getNodePositions(this.root, positions);
+        return positions;
+    }
+    
+    private void getNodePositions(Node root, ArrayList<String[]> positions) {
+        String firstPositions = StringUtils.join(ArrayUtils.toObject(getFirstPositions(root)), " , ");
+        String lastPositions = "";
+        String nextPositions = "";
+        positions.add(new String[]{ Character.toString(root.getToken()), firstPositions, lastPositions, nextPositions });
+        if (root.getRightChild() != null) {
+            getNodePositions(root.getRightChild(), positions);
+        }
+        if (root.getLeftChild() != null) {
+            getNodePositions(root.getLeftChild(), positions);
+        }
+    }
+    
+    public int[] getFirstPositions(Node node) {
+        if (node.getLeftChild() == null && node.getRightChild() == null) {
+            return new int[]{ this.regex.indexOf(node.getToken())  };
+        }
+        if (node.getToken() == SYNTAX_TOKENS[2]) {
+            return getFirstPositions(node.getRightChild());
+        }
+        if (node.getToken() == SYNTAX_TOKENS[4]) {
+            return ArrayUtils.addAll(getFirstPositions(node.getLeftChild()),
+                getFirstPositions(node.getRightChild()));
+        }
+        if (node.getToken() == SYNTAX_TOKENS[6]) {
+            if (isNullable(node.getLeftChild())) {
+                return ArrayUtils.addAll(getFirstPositions(node.getLeftChild()),
+                    getFirstPositions(node.getRightChild()));
+            } else {
+                getFirstPositions(node.getRightChild());
+            }
+        }
+        return new int[]{};
+    }
+    
+//    public int lastPos(Node node) {
+//        
+//    }
+    
+    private boolean isNullable(Node node) {
+        if (node == null || node.getToken() == SYNTAX_TOKENS[2]) {
+            return true;
+        }
+        if (node.getToken() == SYNTAX_TOKENS[4]) {
+            return isNullable(node.getLeftChild()) || isNullable(node.getRightChild());
+        }
+        if (node.getToken() == SYNTAX_TOKENS[6]) {
+            return isNullable(node.getLeftChild()) && isNullable(node.getRightChild());
+        }
+        return false;
+    }
 }

@@ -57,7 +57,7 @@ public class GUI extends javax.swing.JFrame {
         );
         jPanelTreeLayout.setVerticalGroup(
             jPanelTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 253, Short.MAX_VALUE)
+            .addGap(0, 356, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -74,7 +74,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(regex, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 215, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

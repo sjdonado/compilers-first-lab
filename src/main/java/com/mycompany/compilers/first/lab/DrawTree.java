@@ -5,6 +5,7 @@
  */
 package com.mycompany.compilers.first.lab;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -26,7 +27,6 @@ public class DrawTree extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         this.fm = g.getFontMetrics();
-        g.setFont(new Font("Tahoma", Font.BOLD, 18));
         //g.drawString(String.valueOf(tree.root.data), this.getWidth()/2, 30);
 //        drawNode(g, tree.getRoot(), 100, 50, 2);
         int levelHeight = (int) Math.floor(getHeight() / tree.getHeight(tree.getRoot()));
@@ -35,24 +35,32 @@ public class DrawTree extends JPanel {
 	
     public void drawTree(Graphics g, int startWidth, int endWidth,
         int startHeight, int levelHeight, Node node) {
+
         int nextStartWidth, nextEndWidth, nextStartHeight;
-        String data = String.valueOf(node.getToken());
+        String data = Character.toString(node.getToken());
         int dataWidth = this.fm.stringWidth(data);
         int x = getNodeXPosition(startWidth, endWidth) - dataWidth / 2;
         int y = startHeight + levelHeight + this.fm.getHeight() / 2;
         
+        g.setFont(new Font("Tahoma", Font.BOLD, 18));
         g.drawString(data, x, y);
         
-//        int[] firstPositions = this.tree.getFirstPositions(node);
-//        int[] lastPositions = null;
-//        int[] nextPositions = null;
+        g.setFont(new Font("Tahoma", Font.ITALIC, 10));
+        if (node.getPosition() != -1) {
+            g.drawString(Integer.toString(node.getPosition()), x + dataWidth / 2, y + this.fm.getHeight());
+        }
+        
+        g.setColor(Color.BLUE);
+        g.drawString(this.tree.getFirstPositionsAsString(node), x + dataWidth * 2, y);
+        
+        g.setColor(Color.BLACK);
 
         if (node.getLeftChild() != null) {
             nextStartWidth = startWidth;
             nextEndWidth = getNodeXPosition(startWidth, endWidth);
             nextStartHeight = startHeight + levelHeight;
             
-            g.drawLine(x, y + 2, getNodeXPosition(nextStartWidth, nextEndWidth) - 2, nextStartHeight + levelHeight - 2);
+            g.drawLine(x, y + this.fm.getHeight() / 2, getNodeXPosition(nextStartWidth, nextEndWidth), nextStartHeight + levelHeight - this.fm.getHeight() / 2);
             drawTree(g, nextStartWidth, nextEndWidth, nextStartHeight, levelHeight, node.getLeftChild());
         }           
             
@@ -61,13 +69,13 @@ public class DrawTree extends JPanel {
             nextEndWidth = endWidth;
             nextStartHeight = startHeight + levelHeight;
 
-            g.drawLine(x, y + 2, getNodeXPosition(nextStartWidth, nextEndWidth) - 2, nextStartHeight + levelHeight - 2);
+            g.drawLine(x, y + this.fm.getHeight() / 2, getNodeXPosition(nextStartWidth, nextEndWidth), nextStartHeight + levelHeight - this.fm.getHeight() / 2);
             drawTree(g, nextStartWidth, nextEndWidth, nextStartHeight, levelHeight, node.getRightChild());
         }
     }
     
     private int getNodeXPosition(int startWidth, int endWidth) {
-        return (int) Math.floor((startWidth + endWidth) / 1.8);
+        return (int) Math.floor((startWidth + endWidth) / 1.9);
     }
     
 //    private int getNodeNextXPosition(int nextStartWidth, int nextEndWidth) {

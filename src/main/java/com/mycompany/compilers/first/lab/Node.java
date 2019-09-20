@@ -13,16 +13,12 @@ public class Node {
     private Node rightChild;
     private Node leftChild;
     private final char token;
-    private int [] firstPositions;
-    private int[] lastPositions;
-    private int[] nextPositions;
+    private final int position;
     
-    public Node(char token) {
+    public Node(char token, int position) {
         this.rightChild = null;
         this.leftChild = null;
-        this.firstPositions = null;
-        this.lastPositions = null;
-        this.nextPositions = null;
+        this.position = position;
         this.token = token;
     }
 
@@ -44,5 +40,9 @@ public class Node {
 
     public char getToken() {
         return token;
+    }
+    
+    public int getPosition() {
+        return position;
     }
 }

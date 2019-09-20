@@ -7,8 +7,6 @@ package com.mycompany.compilers.first.lab;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +17,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class GUI extends javax.swing.JFrame {
     private AbstractSyntaxTree tree;
+    private DefaultTableModel jTableTreeModel;
+
 
     /**
      * Creates new form GUI
@@ -71,36 +71,7 @@ public class GUI extends javax.swing.JFrame {
             .addGap(0, 421, Short.MAX_VALUE)
         );
 
-        jTableTree.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Nodo", "PrimeraPos", "ÚltimaPos", "SiguientePos"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
         jScrollPane1.setViewportView(jTableTree);
-        if (jTableTree.getColumnModel().getColumnCount() > 0) {
-            jTableTree.getColumnModel().getColumn(2).setResizable(false);
-        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -148,19 +119,21 @@ public class GUI extends javax.swing.JFrame {
         jPanelTree.add(drawTree);
         revalidate();
         repaint();
-
+        
         ArrayList<String[]> treePositions = this.tree.getTreePositions();
-        DefaultTableModel jTableTreeModel = new DefaultTableModel(treePositions.size(), 4);
-        jTableTreeModel.setColumnIdentifiers(new String[] { "Nodo",
-            "PrimeraPos", "ÚltimaPos", "SiguientePos"});
+        jTableTreeModel = new DefaultTableModel(treePositions.size(), 4);
+        jTableTreeModel.setColumnIdentifiers(new String[] { "Nodo", "PrimeraPos",
+            "ÚltimaPos", "SiguientePos"});
         
         for (int row = 0; row < treePositions.size(); row++) {
             String[] nodePositions = treePositions.get(row);
             jTableTreeModel.setValueAt(nodePositions[0], row, 0);
-            jTableTreeModel.setValueAt("{" + nodePositions[1] + "}", row, 1);
-            jTableTreeModel.setValueAt("{" + nodePositions[2] + "}", row, 2);
-            jTableTreeModel.setValueAt("{" + nodePositions[3] + "}", row, 3);
+            jTableTreeModel.setValueAt(nodePositions[1], row, 1);
+            jTableTreeModel.setValueAt(nodePositions[2], row, 2);
+            jTableTreeModel.setValueAt(nodePositions[3], row, 3);
         }
+        
+        jTableTree.removeAll();
         jTableTree.setModel(jTableTreeModel);
     }//GEN-LAST:event_jButton1ActionPerformed
 

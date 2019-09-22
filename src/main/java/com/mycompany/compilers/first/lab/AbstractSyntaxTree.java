@@ -42,10 +42,9 @@ public class AbstractSyntaxTree {
         put("?", Operator.QUESTION_MARK);
     }};
     
-    private Node shuntingYard(String regex) {
+    private ArrayList<String> addConcatNodesToRegexArr(String[] regexArr) {
+        int index = 0;
         ArrayList<String> parsedRegex = new ArrayList<>();
-        int index = 0, position = 1;
-        String[] regexArr = regex.split("");
         while (index < regexArr.length) {
             if (index + 1 < regexArr.length) {
                 boolean isSyntaxKey = operators.containsKey(regexArr[index]);
@@ -75,10 +74,18 @@ public class AbstractSyntaxTree {
             index++;
         }
         System.out.println(parsedRegex);
-        
+        return parsedRegex;
+    }
+    
+    private Node shuntingYard(String regex) {
+        int index = 0, position = 1;
+        ArrayList<String> parsedRegex = addConcatNodesToRegexArr(regex.split(""));
+
         Deque<Node> operandStack = new LinkedList<>();
         Deque<Node> operatorStack = new LinkedList<>();
-        for (String token : parsedRegex) {
+        
+        while (index < parsedRegex.size()) {
+            String token = parsedRegex.get(index);
             // operator
             if (operators.containsKey(token)) {
                 while (!operatorStack.isEmpty() && isHigerPrec(token, operatorStack.peek().getToken()))
@@ -93,9 +100,21 @@ public class AbstractSyntaxTree {
                 operatorStack.pop();
             // operand
             } else {
-                operandStack.push(new Node(token, position));
+                Node newOperand;
+//                if (index +  1 < parsedRegex.size() &&
+//                        (parsedRegex.get(index + 1).equals("*")
+//                            || parsedRegex.get(index + 1).equals("+")
+//                            || parsedRegex.get(index + 1).equals("?"))) {
+//                    newOperand = new Node(parsedRegex.get(index + 1), -1);
+//                    newOperand.setLeftChild(new Node(token, position));
+//                    index++;
+//                } else {
+//                }
+                newOperand = new Node(token, position);
+                operandStack.push(newOperand);
                 position++;
             }
+            index++;
         }
 
         while (!operatorStack.isEmpty()) process(operandStack, operatorStack);
@@ -168,7 +187,7 @@ public class AbstractSyntaxTree {
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
-            if (node.getToken().equals("*")) {
+            if (node.getToken().equals("*") || node.getToken().equals("+")) {
                 return getFirstPositions(node.getLeftChild());
             }
             if (node.getToken().equals("|")) {
@@ -200,7 +219,7 @@ public class AbstractSyntaxTree {
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
-            if (node.getToken().equals("*")) {
+            if (node.getToken().equals("*") || node.getToken().equals("+")) {
                 return getLastPositions(node.getLeftChild());
             }
             if (node.getToken().equals("|")) {
@@ -224,7 +243,7 @@ public class AbstractSyntaxTree {
     }
     
     private boolean isNullable(Node node) {
-        if (node == null || node.getToken().equals("*")) {
+        if (node == null || node.getToken().equals("*") || node.getToken().equals("&")) {
             return true;
         }
         if (node.getToken().equals("|")) {
@@ -233,6 +252,13 @@ public class AbstractSyntaxTree {
         if (node.getToken().equals(".")) {
             return isNullable(node.getLeftChild()) && isNullable(node.getRightChild());
         }
+        if (node.getToken().equals("+")) {
+            return isNullable(node.getLeftChild());
+        }
         return false;
     }
+    
+//    private int[] getNextPos(Node node) {
+//        this.root.
+//    }
 }

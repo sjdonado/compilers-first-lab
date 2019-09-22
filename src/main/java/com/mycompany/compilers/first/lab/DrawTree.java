@@ -42,10 +42,10 @@ public class DrawTree extends JPanel {
         int x = getNodeXPosition(startWidth, endWidth) - tokenWidth / 2;
         int y = startHeight + levelHeight + this.fm.getHeight() / 2;
         
-        g.setFont(new Font("Tahoma", Font.BOLD, 18));
+        g.setFont(new Font("Arial", Font.BOLD, 18));
         g.drawString(token, x, y);
         
-        g.setFont(new Font("Tahoma", Font.ITALIC, 10));
+        g.setFont(new Font("Arial", Font.ITALIC, 10));
         if (node.getPosition() != -1) {
             g.drawString(Integer.toString(node.getPosition()), x + tokenWidth / 2, y + (int) (this.fm.getHeight() / 1.5));
         }

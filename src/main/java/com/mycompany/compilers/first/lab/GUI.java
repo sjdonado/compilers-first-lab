@@ -7,6 +7,7 @@ package com.mycompany.compilers.first.lab;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -19,7 +20,6 @@ public class GUI extends javax.swing.JFrame {
     private AbstractSyntaxTree tree;
     private DefaultTableModel jTableTreeModel;
 
-
     /**
      * Creates new form GUI
      */
@@ -27,8 +27,6 @@ public class GUI extends javax.swing.JFrame {
         initComponents();
         jPanelTree.setBorder(new EmptyBorder(5, 5, 5, 5));
         jPanelTree.setLayout(new BorderLayout(0, 0));
-//        jPanelTree.setSize(800, 700);
-//        setSize(800, 800);
     }
 
     /**
@@ -40,80 +38,120 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        regex = new javax.swing.JTextField();
+        editRegex = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jPanelTree = new javax.swing.JPanel();
+        btnBuildRegexTree = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableTree = new javax.swing.JTable();
+        jPanelTree = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        editEvaulateRegex = new javax.swing.JTextField();
+        btnEvaluateRegex = new javax.swing.JButton();
+        textEvaluationResult = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        regex.setText("a*(a|b)");
+        editRegex.setText("(a|b)*abb");
+        editRegex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editRegexActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Expresión regular:");
 
-        jButton1.setText("Aceptar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnBuildRegexTree.setText("Aceptar");
+        btnBuildRegexTree.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnBuildRegexTreeActionPerformed(evt);
             }
         });
+
+        jScrollPane1.setViewportView(jTableTree);
+
+        jPanelTree.setPreferredSize(new java.awt.Dimension(800, 400));
 
         javax.swing.GroupLayout jPanelTreeLayout = new javax.swing.GroupLayout(jPanelTree);
         jPanelTree.setLayout(jPanelTreeLayout);
         jPanelTreeLayout.setHorizontalGroup(
             jPanelTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 785, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanelTreeLayout.setVerticalGroup(
             jPanelTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 421, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(jTableTree);
+        jLabel2.setText("Reconocer cadena:");
+
+        editEvaulateRegex.setText("abbabb");
+        editEvaulateRegex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editEvaulateRegexActionPerformed(evt);
+            }
+        });
+
+        btnEvaluateRegex.setText("Aceptar");
+        btnEvaluateRegex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEvaluateRegexActionPerformed(evt);
+            }
+        });
+
+        textEvaluationResult.setText("No valida");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(regex)
+                        .addComponent(editRegex, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap())
+                        .addComponent(btnBuildRegexTree)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editEvaulateRegex, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEvaluateRegex)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textEvaluationResult)))
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(regex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editRegex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton1))
+                    .addComponent(btnBuildRegexTree)
+                    .addComponent(jLabel2)
+                    .addComponent(editEvaulateRegex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEvaluateRegex)
+                    .addComponent(textEvaluationResult))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.tree = new AbstractSyntaxTree(regex.getText());
+    private void btnBuildRegexTreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildRegexTreeActionPerformed
+        this.tree = new AbstractSyntaxTree(editRegex.getText());
+        
         JPanel drawTree = new DrawTree(this.tree);
         jPanelTree.removeAll();
         jPanelTree.add(drawTree);
@@ -135,7 +173,19 @@ public class GUI extends javax.swing.JFrame {
         
         jTableTree.removeAll();
         jTableTree.setModel(jTableTreeModel);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnBuildRegexTreeActionPerformed
+
+    private void editRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editRegexActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editRegexActionPerformed
+
+    private void editEvaulateRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEvaulateRegexActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editEvaulateRegexActionPerformed
+
+    private void btnEvaluateRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluateRegexActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEvaluateRegexActionPerformed
 
     /**
      * @param args the command line arguments
@@ -167,17 +217,23 @@ public class GUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GUI().setVisible(true);
+                JFrame jframe = new GUI();
+                jframe.setLocationRelativeTo(null);
+                jframe.setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnBuildRegexTree;
+    private javax.swing.JButton btnEvaluateRegex;
+    private javax.swing.JTextField editEvaulateRegex;
+    private javax.swing.JTextField editRegex;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanelTree;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableTree;
-    private javax.swing.JTextField regex;
+    private javax.swing.JLabel textEvaluationResult;
     // End of variables declaration//GEN-END:variables
 }

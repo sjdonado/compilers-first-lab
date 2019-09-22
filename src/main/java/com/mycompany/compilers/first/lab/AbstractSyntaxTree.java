@@ -56,10 +56,14 @@ public class AbstractSyntaxTree {
                 boolean nextIsClosedParenthesis = regexArr[index + 1].equals(")");
                 if ((!isSyntaxKey && !isParenthesis(regexArr[index]) 
                         && !nextIsSyntaxKey && !isParenthesis(regexArr[index + 1]))
-                        || (nextIsOpenParenthesis && !regexArr[index].equals("|")
+                        || (nextIsOpenParenthesis && !isSyntaxKey
                             && !isOpenParenthesis)
-                        || (isClosedParenthesis && !regexArr[index + 1].equals("|")
-                            && !nextIsClosedParenthesis)) {
+                        || (isClosedParenthesis && !nextIsSyntaxKey
+                            && !nextIsClosedParenthesis)
+                        || ((regexArr[index].equals("*") 
+                            || regexArr[index].equals("+")
+                            || regexArr[index].equals("?")) && !nextIsSyntaxKey 
+                            && !isParenthesis(regexArr[index + 1]))) {
                     parsedRegex.add(regexArr[index]);
                     if (!regexArr[index + 1].equals(".")) {
                         parsedRegex.add("."); 
@@ -164,22 +168,22 @@ public class AbstractSyntaxTree {
         return positions;
     }
     
-    private void getNodePositions(Node root, ArrayList<String[]> positions) {
-        String firstPositions = getFirstPositionsAsString(root);
-        String lastPositions = getLastPositionsAsString(root);
-        String nextPositions = "{}";
-        if (root.getLeftChild() != null) {
-            getNodePositions(root.getLeftChild(), positions);
+    private void getNodePositions(Node node, ArrayList<String[]> positions) {
+        String firstPositions = getFirstPositionsAsString(node);
+        String lastPositions = getLastPositionsAsString(node);
+        String nextPositions = getNextPositionsAsString(node);
+        if (node.getLeftChild() != null) {
+            getNodePositions(node.getLeftChild(), positions);
         }
-        positions.add(new String[]{ root.getToken(),
+        positions.add(new String[]{ node.getToken(),
             firstPositions, lastPositions, nextPositions });
-        if (root.getRightChild() != null) {
-            getNodePositions(root.getRightChild(), positions);
+        if (node.getRightChild() != null) {
+            getNodePositions(node.getRightChild(), positions);
         }
     }
     
     public String getFirstPositionsAsString(Node node) {
-        return "{" + StringUtils.join(ArrayUtils.toObject(getFirstPositions(node)), " , ") + "}";
+        return "{" + StringUtils.join(ArrayUtils.toObject(getFirstPositions(node)), ",") + "}";
     }
     
     public int[] getFirstPositions(Node node) {
@@ -211,11 +215,11 @@ public class AbstractSyntaxTree {
     }
     
     public String getLastPositionsAsString(Node node) {
-        return "{" + StringUtils.join(ArrayUtils.toObject(getLastPositions(node)), " , ") + "}";
+        return "{" + StringUtils.join(ArrayUtils.toObject(getLastPositions(node)), ",") + "}";
     }
     
     private int[] getLastPositions(Node node) {
-              if (node != null) {
+        if (node != null) {
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
@@ -239,7 +243,47 @@ public class AbstractSyntaxTree {
                 }
             }
         }
-        return new int[]{};  
+        return new int[]{};
+    }
+    
+    public String getNextPositionsAsString(Node node) {
+        return "{" + StringUtils.join(ArrayUtils.toObject(getNextPositions(
+            new ArrayList(),
+            root,
+            root,
+            node.getPosition())
+        ), ",") + "}";
+    }
+    
+    private int[] getNextPositions(ArrayList<Integer> nexPositions,Node tempNode, Node parent, int position) {
+        if (tempNode != null) {
+            if (Arrays.binarySearch(getFirstPositions(tempNode), position) == 1
+                    || Arrays.binarySearch(getFirstPositions(parent), position) == 1) {
+                if (tempNode.getToken().equals("*")
+                        && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) != -1) {
+                    addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getLeftChild()));
+                }
+                if (tempNode.getToken().equals(".")
+                        && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) != -1) {
+                    addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getRightChild()));
+                }
+                if (tempNode.getLeftChild() != null) {
+    //                if (Arrays.binarySearch(getFirstPositions(tempNode.getLeftChild()), position) == 1)
+                        getNextPositions(nexPositions, tempNode.getLeftChild(), tempNode, position);
+                }
+                if (tempNode.getRightChild() != null) {
+    //                if (Arrays.binarySearch(getFirstPositions(tempNode.getRightChild()), position) == 1)
+                        getNextPositions(nexPositions, tempNode.getRightChild(), tempNode, position);
+                }
+            }
+        }
+        return nexPositions.stream().mapToInt(i->i).toArray();
+    }
+    
+    private void addNextPositionsToArrayList(ArrayList<Integer> positions, int [] nextPositions) {
+        for (int nexPosition : nextPositions) {
+            if (!positions.contains(nexPosition)) positions.add(nexPosition);
+        }
     }
     
     private boolean isNullable(Node node) {
@@ -257,8 +301,4 @@ public class AbstractSyntaxTree {
         }
         return false;
     }
-    
-//    private int[] getNextPos(Node node) {
-//        this.root.
-//    }
 }

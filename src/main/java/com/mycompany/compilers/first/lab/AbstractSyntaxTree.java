@@ -247,34 +247,35 @@ public class AbstractSyntaxTree {
     }
     
     public String getNextPositionsAsString(Node node) {
-        return "{" + StringUtils.join(ArrayUtils.toObject(getNextPositions(
-            new ArrayList(),
-            root,
-            root,
-            node.getPosition())
-        ), ",") + "}";
+        return "{" + StringUtils.join(ArrayUtils
+            .toObject(getNextPositionsSorted(node)), ",") + "}";
     }
     
-    private int[] getNextPositions(ArrayList<Integer> nexPositions,Node tempNode, Node parent, int position) {
+    private int[] getNextPositionsSorted(Node node) {
+        int[] nextPositions = getNextPositions(new ArrayList(), root, node.getPosition());
+        Arrays.sort(nextPositions);
+        return nextPositions;
+    }
+    
+    private int[] getNextPositions(ArrayList<Integer> nexPositions, Node tempNode, int position) {
         if (tempNode != null) {
-            if (Arrays.binarySearch(getFirstPositions(tempNode), position) == 1
-                    || Arrays.binarySearch(getFirstPositions(parent), position) == 1) {
-                if (tempNode.getToken().equals("*")
-                        && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) != -1) {
-                    addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getLeftChild()));
-                }
-                if (tempNode.getToken().equals(".")
-                        && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) != -1) {
-                    addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getRightChild()));
-                }
-                if (tempNode.getLeftChild() != null) {
-    //                if (Arrays.binarySearch(getFirstPositions(tempNode.getLeftChild()), position) == 1)
-                        getNextPositions(nexPositions, tempNode.getLeftChild(), tempNode, position);
-                }
-                if (tempNode.getRightChild() != null) {
-    //                if (Arrays.binarySearch(getFirstPositions(tempNode.getRightChild()), position) == 1)
-                        getNextPositions(nexPositions, tempNode.getRightChild(), tempNode, position);
-                }
+            if (tempNode.getToken().equals("*")
+                    && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) >= 0) {
+                addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getLeftChild()));
+            }
+            if (tempNode.getToken().equals(".")
+                    && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) >= 0) {
+                addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getRightChild()));
+            }
+            if (tempNode.getLeftChild() != null
+                    && (tempNode.getLeftChild().getToken().equals("*")
+                        || tempNode.getLeftChild().getToken().equals("."))) {
+                getNextPositions(nexPositions, tempNode.getLeftChild(), position);
+            }
+            if (tempNode.getRightChild() != null
+                    && (tempNode.getRightChild().getToken().equals("*")
+                        || tempNode.getRightChild().getToken().equals("."))) {
+                getNextPositions(nexPositions, tempNode.getRightChild(), position);
             }
         }
         return nexPositions.stream().mapToInt(i->i).toArray();

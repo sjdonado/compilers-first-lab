@@ -30,7 +30,7 @@ public class DrawTree extends JPanel {
         //g.drawString(String.valueOf(tree.root.data), this.getWidth()/2, 30);
 //        drawNode(g, tree.getRoot(), 100, 50, 2);
         int levelHeight = (int) Math.floor(getHeight() / tree.getHeight(tree.getRoot()));
-        drawTree(g, 0, getWidth(), this.fm.getHeight() - levelHeight, levelHeight, tree.getRoot());
+        drawTree(g, 0, getWidth() + 20, this.fm.getHeight() - levelHeight, levelHeight, tree.getRoot());
     }
 	
     public void drawTree(Graphics g, int startWidth, int endWidth,

@@ -37,21 +37,26 @@ public class DrawTree extends JPanel {
         int startHeight, int levelHeight, Node node) {
 
         int nextStartWidth, nextEndWidth, nextStartHeight;
-        String data = Character.toString(node.getToken());
-        int dataWidth = this.fm.stringWidth(data);
-        int x = getNodeXPosition(startWidth, endWidth) - dataWidth / 2;
+        String token = node.getToken();
+        int tokenWidth = this.fm.stringWidth(token);
+        int x = getNodeXPosition(startWidth, endWidth) - tokenWidth / 2;
         int y = startHeight + levelHeight + this.fm.getHeight() / 2;
         
         g.setFont(new Font("Tahoma", Font.BOLD, 18));
-        g.drawString(data, x, y);
+        g.drawString(token, x, y);
         
         g.setFont(new Font("Tahoma", Font.ITALIC, 10));
         if (node.getPosition() != -1) {
-            g.drawString(Integer.toString(node.getPosition()), x + dataWidth / 2, y + this.fm.getHeight());
+            g.drawString(Integer.toString(node.getPosition()), x + tokenWidth / 2, y + (int) (this.fm.getHeight() / 1.5));
         }
         
         g.setColor(Color.BLUE);
-        g.drawString(this.tree.getFirstPositionsAsString(node), x + dataWidth * 2, y);
+        String firstPositions = this.tree.getFirstPositionsAsString(node);
+        g.drawString(firstPositions, x + tokenWidth * 2,  y);
+        
+        g.setColor(Color.RED);
+        String lastPositions = this.tree.getLastPositionsAsString(node);
+        g.drawString(lastPositions, x - tokenWidth - this.fm.stringWidth(lastPositions) / 2,  y);
         
         g.setColor(Color.BLACK);
 

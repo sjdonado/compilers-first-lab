@@ -49,7 +49,7 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        regex.setText("(a|b)*abb");
+        regex.setText("a*(a|b)");
 
         jLabel1.setText("Expresión regular:");
 

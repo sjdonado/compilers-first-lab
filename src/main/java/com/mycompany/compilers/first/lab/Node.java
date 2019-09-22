@@ -12,15 +12,21 @@ package com.mycompany.compilers.first.lab;
 public class Node {
     private Node rightChild;
     private Node leftChild;
-    private final char token;
+//    private Node parent;
+    private final String token;
     private final int position;
     
-    public Node(char token, int position) {
+    public Node(String token, int position) {
         this.rightChild = null;
         this.leftChild = null;
-        this.position = position;
+//        this.parent = parent;
         this.token = token;
+        this.position = position;
     }
+    
+//    public void setParent(Node parent) {
+//        this.parent = parent;
+//    }
 
     public void setRightChild(Node rightChild) {
         this.rightChild = rightChild;
@@ -37,8 +43,12 @@ public class Node {
     public Node getLeftChild() {
         return leftChild;
     }
+    
+//    public Node getParent() {
+//        return parent;
+//    }
 
-    public char getToken() {
+    public String getToken() {
         return token;
     }
     

@@ -302,4 +302,26 @@ public class AbstractSyntaxTree {
         }
         return false;
     }
+    
+    public String getAlphabet() {
+        ArrayList<String> alphabet = alphabet(new ArrayList(), root);
+        alphabet.remove("#");
+        return "{" + StringUtils.join(alphabet.toArray(new String[alphabet.size()]), ",") + "}";
+    }
+    
+    private ArrayList<String> alphabet(ArrayList<String> letters, Node node) {
+        if (node != null) {
+            if (!operators.containsKey(node.getToken())
+                    && !letters.contains(node.getToken())) {
+                letters.add(node.getToken());
+            }
+            if (node.getLeftChild() != null) {
+                alphabet(letters, node.getLeftChild());
+            }
+            if (node.getRightChild() != null) {
+                alphabet(letters, node.getRightChild());
+            }
+        }
+        return letters;
+    }
 }

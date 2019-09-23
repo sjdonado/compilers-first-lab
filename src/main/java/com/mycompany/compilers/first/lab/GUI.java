@@ -291,15 +291,10 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_editEvaulateRegexActionPerformed
 
     private void btnEvaluateRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluateRegexActionPerformed
-        try {
-            if (afd.validateString(editEvaulateRegex.getText())) {
-                textEvaluationResult.setText("Valida");
-            } else {
-                textEvaluationResult.setText("No Valida");
-            }
-        } catch (Exception ex) {
-            textEvaluationResult.setText("Token no encontrado");
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        if (afd.validateString(editEvaulateRegex.getText())) {
+            textEvaluationResult.setText("Valida");
+        } else {
+            textEvaluationResult.setText("No Valida");
         }
     }//GEN-LAST:event_btnEvaluateRegexActionPerformed
 

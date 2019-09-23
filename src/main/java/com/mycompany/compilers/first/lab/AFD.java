@@ -7,6 +7,7 @@ package com.mycompany.compilers.first.lab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 
 class StatusD {
-    private static int indexCounter = 0;
+    static int indexCounter = 0;
     String token;
     int[] positions;
     boolean marked;
@@ -43,6 +44,7 @@ public class AFD {
 //    private final ArrayList<ArrayList<String>> trandD = new ArrayList();
     
     public AFD(AbstractSyntaxTree tree) {
+        StatusD.indexCounter = 0;
         this.tree = tree;
         this.statuses = new ArrayList();
         trandD = new String[500][this.tree.getAlphabet().length];
@@ -75,7 +77,7 @@ public class AFD {
                     statuses.add(u);
                 }
 //                System.out.println("STATUS => " + status.token + " U => " + u.token + " POSITIONS =>" + positions.toString());
-                trandD[status.index][tokenPos] = u == null ? "" : u.token;
+                trandD[status.index][tokenPos] = u == null ? null : u.token;
                 tokenPos++;
             }
         }
@@ -109,17 +111,23 @@ public class AFD {
         return statuses.stream().map(s -> new String[]{s.token, "{" + StringUtils.join(ArrayUtils.toObject(s.positions), ",") + "}"}).toArray(String[][]::new);
     }
     
-    public boolean validateString(String regex) throws Exception {
-//        int index = 0;
-//        String[] regexArr = regex.split("");
-//        while (index < regexArr.length - 1) {
-//            Node node = searchNode(root, regexArr[index]);
-//            Node nextNode = searchNode(root, regexArr[index + 1]);
-//            if (node == null || nextNode == null) throw new Exception("Node not found");
-//            if (Arrays.binarySearch(getNextPositionsSorted(node), nextNode.getPosition()) < 0)
-//                return false;
-//            index += 2;
-//        }
-        return true;
+    private String[] getStatusesTokens() {
+        return statuses.stream().map(s -> s.token).toArray(String[]::new);
+    }
+    
+    public boolean validateString(String regex) {
+        List<String> statusesTokens = Arrays.asList(getStatusesTokens());
+        List<String> alphabet = Arrays.asList(tree.getAlphabet());
+        int index = 0, statusIndex = 0, letterPos;
+        String[] regexArr = regex.split("");
+        System.out.println(regexArr);
+        while (index < regexArr.length) {
+            letterPos = alphabet.indexOf(regexArr[index]);
+            if (letterPos == -1 || statusIndex == -1) return false;
+            System.out.println("NEXT_STATUS: " + trandD[statusIndex][letterPos] + " SYM: " + regexArr[index]);
+            statusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
+            index ++;
+        }
+        return statusIndex == statusesTokens.size() - 1;
     }
 }

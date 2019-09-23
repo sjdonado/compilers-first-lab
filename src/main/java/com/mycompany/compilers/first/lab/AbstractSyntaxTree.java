@@ -33,7 +33,7 @@ public class AbstractSyntaxTree {
     public AbstractSyntaxTree(String regex) {
         this.regex = regex + "#";
         this.root = shuntingYard(this.regex);
-        printTree(root);
+//        printTree(root);
     }
     
     private final static Map<String, Operator> operators = new HashMap<String, Operator>() {{
@@ -44,6 +44,7 @@ public class AbstractSyntaxTree {
         put("?", Operator.QUESTION_MARK);
     }};
     
+//    TODO: Add a+ as one operand
     private ArrayList<String> addConcatNodesToRegexArr(String[] regexArr) {
         int index = 0;
         ArrayList<String> parsedRegex = new ArrayList<>();
@@ -160,7 +161,7 @@ public class AbstractSyntaxTree {
     private void printTree(Node n) {
         if (n == null) return;
         printTree(n.getLeftChild());
-        System.out.print(n.getToken());
+        System.out.println(n.getToken());
         printTree(n.getRightChild());
     }
     

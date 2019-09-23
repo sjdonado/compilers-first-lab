@@ -7,6 +7,7 @@ package com.mycompany.compilers.first.lab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -74,7 +75,7 @@ public class AFD {
                     statuses.add(u);
                 }
 //                System.out.println("STATUS => " + status.token + " U => " + u.token + " POSITIONS =>" + positions.toString());
-                trandD[status.index][tokenPos] = u.token;
+                trandD[status.index][tokenPos] = u == null ? "" : u.token;
                 tokenPos++;
             }
         }
@@ -104,12 +105,8 @@ public class AFD {
         return this.trandD;
     }
     
-    public String getStatusesTokensAsString(){
-        return "{" + StringUtils.join(getStatusesTokens(), ",") + "}";
-    }
-    
-    public String[] getStatusesTokens() {
-        return statuses.stream().map(s -> s.token).toArray(String[]::new);
+    public String[][] getStatuses() {
+        return statuses.stream().map(s -> new String[]{s.token, "{" + StringUtils.join(ArrayUtils.toObject(s.positions), ",") + "}"}).toArray(String[][]::new);
     }
     
     public boolean validateString(String regex) throws Exception {

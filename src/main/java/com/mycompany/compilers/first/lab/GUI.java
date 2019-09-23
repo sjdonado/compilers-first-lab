@@ -7,6 +7,8 @@ package com.mycompany.compilers.first.lab;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -22,6 +24,7 @@ public class GUI extends javax.swing.JFrame {
     private AFD afd;
     private DefaultTableModel jTableTreeModel;
     private DefaultTableModel jTableTranDModel;
+    private DefaultTableModel jTableAFDStatuses;
 
     /**
      * Creates new form GUI
@@ -54,13 +57,14 @@ public class GUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         editRegex = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tableTRAND = new javax.swing.JTable();
+        tableAFDStatuses = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
-        textAFDStatuses = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableTRAND = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,11 +86,13 @@ public class GUI extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(tableAbstractSyntaxTree);
 
+        jPanelTree.setPreferredSize(new java.awt.Dimension(869, 682));
+
         javax.swing.GroupLayout jPanelTreeLayout = new javax.swing.GroupLayout(jPanelTree);
         jPanelTree.setLayout(jPanelTreeLayout);
         jPanelTreeLayout.setHorizontalGroup(
             jPanelTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 869, Short.MAX_VALUE)
         );
         jPanelTreeLayout.setVerticalGroup(
             jPanelTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,7 +115,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        textEvaluationResult.setText(" ");
+        textEvaluationResult.setText("No valida");
 
         jLabel3.setText("Tabla TRAND");
 
@@ -120,16 +126,9 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jScrollPane2.setViewportView(tableTRAND);
+        jScrollPane2.setViewportView(tableAFDStatuses);
 
         jLabel4.setText("Estados AFD:");
-
-        textAFDStatuses.setEditable(false);
-        textAFDStatuses.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textAFDStatusesActionPerformed(evt);
-            }
-        });
 
         jLabel5.setText("Alfabeto:");
 
@@ -138,8 +137,10 @@ public class GUI extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(0, 51, 255));
         jLabel7.setText("PrimeraPos");
 
-        jLabel8.setForeground(new java.awt.Color(255, 0, 51));
+        jLabel8.setForeground(new java.awt.Color(255, 0, 0));
         jLabel8.setText("ÚltimaPos");
+
+        jScrollPane3.setViewportView(tableTRAND);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -149,53 +150,47 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(editRegex, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBuildRegexTree))
-                            .addGroup(layout.createSequentialGroup()
+                        .addComponent(editRegex, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuildRegexTree)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editEvaulateRegex, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEvaluateRegex)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textEvaluationResult, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel8))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textAlphabet)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(editEvaulateRegex, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(7, 7, 7)
-                                .addComponent(textAFDStatuses)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnEvaluateRegex)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textEvaluationResult, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8)))))
+                                .addComponent(textAlphabet))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanelTree, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(btnBuildRegexTree)
@@ -203,29 +198,29 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(editEvaulateRegex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEvaluateRegex)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7)
                     .addComponent(textEvaluationResult))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textAlphabet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textAFDStatuses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(textAlphabet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 29, Short.MAX_VALUE))))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanelTree, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -259,22 +254,29 @@ public class GUI extends javax.swing.JFrame {
         
         textAlphabet.setText(tree.getAlphabetAsString());
         
-//        tableTRAND
+//        AFD
         String[][] trandD = afd.getTrandD();
         String[] alphabet = tree.getAlphabet();
-        String[] tokens = afd.getStatusesTokens();
-        textAFDStatuses.setText(afd.getStatusesTokensAsString());
+        String[][] statuses = afd.getStatuses();
         
-        jTableTranDModel = new DefaultTableModel(tokens.length, alphabet.length);
+        jTableAFDStatuses = new DefaultTableModel(statuses.length, 2);
+        jTableAFDStatuses.setColumnIdentifiers(new String[] { "Estado", "Posiciones"});
+        
+        jTableTranDModel = new DefaultTableModel(statuses.length, alphabet.length);
         jTableTranDModel.setColumnIdentifiers(
                 ArrayUtils.addAll(new String[] { "Estado\\Símbolo"}, alphabet));
         
-        for (int row = 0; row < tokens.length; row++) {
-            jTableTranDModel.setValueAt(tokens[row], row, 0);
+        for (int row = 0; row < statuses.length; row++) {
+            jTableTranDModel.setValueAt(statuses[row][0], row, 0);
+            jTableAFDStatuses.setValueAt(statuses[row][0], row, 0);
+            jTableAFDStatuses.setValueAt(statuses[row][1], row, 1);
             for (int column = 0; column < alphabet.length; column++) {
                 jTableTranDModel.setValueAt(trandD[row][column], row, column + 1);
             }
         }
+        
+        tableAFDStatuses.removeAll();
+        tableAFDStatuses.setModel(jTableAFDStatuses);
         
         tableTRAND.removeAll();
         tableTRAND.setModel(jTableTranDModel);
@@ -289,25 +291,21 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_editEvaulateRegexActionPerformed
 
     private void btnEvaluateRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluateRegexActionPerformed
-//        try {
-//            if (tree.validateString(editEvaulateRegex.getText())) {
-//                textEvaluationResult.setText("Valida");
-//            } else {
-//                textEvaluationResult.setText("No Valida");
-//            }
-//        } catch (Exception ex) {
-//            textEvaluationResult.setText("Token no encontrado");
-//            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            if (afd.validateString(editEvaulateRegex.getText())) {
+                textEvaluationResult.setText("Valida");
+            } else {
+                textEvaluationResult.setText("No Valida");
+            }
+        } catch (Exception ex) {
+            textEvaluationResult.setText("Token no encontrado");
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnEvaluateRegexActionPerformed
 
     private void editRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editRegexActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_editRegexActionPerformed
-
-    private void textAFDStatusesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAFDStatusesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textAFDStatusesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -362,9 +360,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelTree;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable tableAFDStatuses;
     private javax.swing.JTable tableAbstractSyntaxTree;
     private javax.swing.JTable tableTRAND;
-    private javax.swing.JTextField textAFDStatuses;
     private javax.swing.JTextField textAlphabet;
     private javax.swing.JLabel textEvaluationResult;
     // End of variables declaration//GEN-END:variables

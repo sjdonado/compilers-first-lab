@@ -44,29 +44,25 @@ public class AbstractSyntaxTree {
         put("?", Operator.QUESTION_MARK);
     }};
     
-//    TODO: Add a+ as one operand
-    private ArrayList<String> addConcatNodesToRegexArr(String[] regexArr) {
+    private ArrayList<String> parseRegexArr(String[] regexArr) {
         int index = 0;
         ArrayList<String> parsedRegex = new ArrayList<>();
         while (index < regexArr.length) {
             if (index + 1 < regexArr.length) {
-                boolean isSyntaxKey = operators.containsKey(regexArr[index]);
+                boolean isSyntaxToken = isSyntaxToken(regexArr[index]);
+                boolean isOperator = operators.containsKey(regexArr[index]);
                 boolean isOpenParenthesis = regexArr[index].equals("(");
                 boolean isClosedParenthesis = regexArr[index].equals(")");
                 
-                boolean nextIsSyntaxKey = operators.containsKey(regexArr[index + 1]);
+                boolean nextIsSyntaxToken = isSyntaxToken(regexArr[index + 1]);
+                boolean nextIsOperator = operators.containsKey(regexArr[index + 1]);
                 boolean nextIsOpenParenthesis = regexArr[index + 1].equals("(");
                 boolean nextIsClosedParenthesis = regexArr[index + 1].equals(")");
-                if ((!isSyntaxKey && !isParenthesis(regexArr[index]) 
-                        && !nextIsSyntaxKey && !isParenthesis(regexArr[index + 1]))
-                        || (nextIsOpenParenthesis && !isSyntaxKey
-                            && !isOpenParenthesis)
-                        || (isClosedParenthesis && !nextIsSyntaxKey
-                            && !nextIsClosedParenthesis)
-                        || ((regexArr[index].equals("*") 
-                            || regexArr[index].equals("+")
-                            || regexArr[index].equals("?")) && !nextIsSyntaxKey 
-                            && !isParenthesis(regexArr[index + 1]))) {
+                
+                if ((!isSyntaxToken && !nextIsSyntaxToken)
+                        || (nextIsOpenParenthesis && !isOperator && !isOpenParenthesis)
+                        || (isClosedParenthesis && !nextIsOperator && !nextIsClosedParenthesis)
+                        || (isOperandToken(regexArr[index + 1]) && !nextIsSyntaxToken)) {
                     parsedRegex.add(regexArr[index]);
                     if (!regexArr[index + 1].equals(".")) {
                         parsedRegex.add("."); 
@@ -86,7 +82,7 @@ public class AbstractSyntaxTree {
     
     private Node shuntingYard(String regex) {
         int index = 0, position = 1;
-        ArrayList<String> parsedRegex = addConcatNodesToRegexArr(regex.split(""));
+        ArrayList<String> parsedRegex = parseRegexArr(regex.split(""));
 
         Deque<Node> operandStack = new LinkedList<>();
         Deque<Node> operatorStack = new LinkedList<>();
@@ -95,7 +91,7 @@ public class AbstractSyntaxTree {
             String token = parsedRegex.get(index);
             // operator
             if (operators.containsKey(token)) {
-                while (!operatorStack.isEmpty() && isHigerPrec(token, operatorStack.peek().getToken()))
+                while (!operatorStack.isEmpty() && isHigherPrec(token, operatorStack.peek().getToken()))
                     process(operandStack, operatorStack);
                 operatorStack.push(new Node(token, -1));
             // left parenthesis
@@ -108,16 +104,15 @@ public class AbstractSyntaxTree {
             // operand
             } else {
                 Node newOperand;
-//                if (index +  1 < parsedRegex.size() &&
-//                        (parsedRegex.get(index + 1).equals("*")
-//                            || parsedRegex.get(index + 1).equals("+")
-//                            || parsedRegex.get(index + 1).equals("?"))) {
-//                    newOperand = new Node(parsedRegex.get(index + 1), -1);
-//                    newOperand.setLeftChild(new Node(token, position));
-//                    index++;
-//                } else {
-//                }
-                newOperand = new Node(token, position);
+                if ((index + 1 < parsedRegex.size() 
+                        && !isSyntaxToken(parsedRegex.get(index)))
+                        && isOperandToken(parsedRegex.get(index + 1))) {
+                    newOperand = new Node(parsedRegex.get(index + 1), -1);
+                    newOperand.setLeftChild(new Node(token, position));
+                    index++;
+                } else {
+                    newOperand = new Node(token, position);
+                }
                 operandStack.push(newOperand);
                 position++;
             }
@@ -141,12 +136,21 @@ public class AbstractSyntaxTree {
         operandStack.push(operator); 
     }
     
-    private boolean isHigerPrec(String op, String sub) {
+    private boolean isHigherPrec(String op, String sub) {
         return (operators.containsKey(sub) && operators.get(sub).precedence >= operators.get(op).precedence);
     }
     
     private boolean isParenthesis(String token) {
         return token.equals("(") || token.equals(")");
+    }
+    
+    private boolean isSyntaxToken(String token) {
+        return operators.containsKey(token) || token.equals("(")
+            || token.equals(")") || token.equals("&");
+    }
+    
+    private boolean isOperandToken(String token) {
+        return token.equals("+") || token.equals("*") || token.equals("?");
     }
 
     public Node getRoot() {

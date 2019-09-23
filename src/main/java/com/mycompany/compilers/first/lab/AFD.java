@@ -120,11 +120,10 @@ public class AFD {
         List<String> alphabet = Arrays.asList(tree.getAlphabet());
         int index = 0, statusIndex = 0, letterPos;
         String[] regexArr = regex.split("");
-        System.out.println(regexArr);
         while (index < regexArr.length) {
             letterPos = alphabet.indexOf(regexArr[index]);
             if (letterPos == -1 || statusIndex == -1) return false;
-            System.out.println("NEXT_STATUS: " + trandD[statusIndex][letterPos] + " SYM: " + regexArr[index]);
+//            System.out.println("NEXT_STATUS: " + trandD[statusIndex][letterPos] + " SYM: " + regexArr[index]);
             statusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
             index ++;
         }

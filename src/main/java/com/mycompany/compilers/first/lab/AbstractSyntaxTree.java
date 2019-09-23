@@ -7,6 +7,8 @@ package com.mycompany.compilers.first.lab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -251,7 +253,7 @@ public class AbstractSyntaxTree {
             .toObject(getNextPositionsSorted(node)), ",") + "}";
     }
     
-    private int[] getNextPositionsSorted(Node node) {
+    public int[] getNextPositionsSorted(Node node) {
         int[] nextPositions = getNextPositions(new ArrayList(), root, node.getPosition());
         Arrays.sort(nextPositions);
         return nextPositions;
@@ -303,25 +305,39 @@ public class AbstractSyntaxTree {
         return false;
     }
     
-    public String getAlphabet() {
-        ArrayList<String> alphabet = alphabet(new ArrayList(), root);
-        alphabet.remove("#");
-        return "{" + StringUtils.join(alphabet.toArray(new String[alphabet.size()]), ",") + "}";
+    public String getAlphabetAsString() {
+        return "{" + StringUtils.join(getAlphabet(), ",") + "}";
     }
     
-    private ArrayList<String> alphabet(ArrayList<String> letters, Node node) {
+    public String[] getAlphabet() {
+        ArrayList<Node> nodes = nodesList(new ArrayList(), root);
+        nodes.remove(nodes.size() - 1);
+        return nodes.stream().map(n -> n.getToken()).distinct().toArray(String[]::new);
+    }
+    
+    public Node[] getNodes() {
+        ArrayList<Node> nodes = nodesList(new ArrayList(), root);
+        
+        Comparator<Node> comparator = (Node n1, Node n2) ->
+            (new Integer(n1.getPosition())).compareTo(new Integer(n2.getPosition()));
+        Collections.sort(nodes, comparator);
+        
+        return nodes.stream().toArray(Node[]::new);
+    }
+    
+    private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node) {
         if (node != null) {
             if (!operators.containsKey(node.getToken())
-                    && !letters.contains(node.getToken())) {
-                letters.add(node.getToken());
+                    && !nodes.contains(node)) {
+                nodes.add(node);
             }
             if (node.getLeftChild() != null) {
-                alphabet(letters, node.getLeftChild());
+                nodesList(nodes, node.getLeftChild());
             }
             if (node.getRightChild() != null) {
-                alphabet(letters, node.getRightChild());
+                nodesList(nodes, node.getRightChild());
             }
         }
-        return letters;
+        return nodes;
     }
 }

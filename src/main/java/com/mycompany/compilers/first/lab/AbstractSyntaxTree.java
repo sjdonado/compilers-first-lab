@@ -62,6 +62,7 @@ public class AbstractSyntaxTree {
                 if ((!isSyntaxToken && !nextIsSyntaxToken)
                         || (nextIsOpenParenthesis && !isOperator && !isOpenParenthesis)
                         || (isClosedParenthesis && !nextIsOperator && !nextIsClosedParenthesis)
+//                        || (isClosedParenthesis && nextIsSyntaxToken)
                         || (isOperandToken(regexArr[index + 1]) && !nextIsSyntaxToken)
                         || (isOperandToken(regexArr[index]) && !nextIsSyntaxToken)) {
                     parsedRegex.add(regexArr[index]);

@@ -80,10 +80,6 @@ public class DrawTree extends JPanel {
     }
     
     private int getNodeXPosition(int startWidth, int endWidth) {
-        return (int) Math.floor((startWidth + endWidth) / 1.9);
+        return (int) Math.floor((startWidth + endWidth) / 1.8);
     }
-    
-//    private int getNodeNextXPosition(int nextStartWidth, int nextEndWidth) {
-//        return ((int) Math.floor((nextStartWidth + nextEndWidth) / 1.2)) - nextStartWidth / 4;
-//    }
 }

@@ -115,11 +115,11 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        textEvaluationResult.setText("No valida");
+        textEvaluationResult.setText(" ");
 
         jLabel3.setText("Tabla TRAND");
 
-        editRegex.setText("(a|b)*abb");
+        editRegex.setText("a+bc?aa*b(((d|e)|&)+)?");
         editRegex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editRegexActionPerformed(evt);

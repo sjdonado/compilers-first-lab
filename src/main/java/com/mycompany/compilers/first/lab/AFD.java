@@ -47,7 +47,7 @@ public class AFD {
         StatusD.indexCounter = 0;
         this.tree = tree;
         this.statuses = new ArrayList();
-        trandD = new String[500][this.tree.getAlphabet().length];
+        trandD = new String[1000][this.tree.getAlphabet().length];
         statuses.add(new StatusD(this.tree.getFirstPositions(this.tree.getRoot())));
         build();
     }

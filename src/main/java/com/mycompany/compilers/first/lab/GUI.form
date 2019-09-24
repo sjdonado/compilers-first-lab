@@ -200,7 +200,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="textEvaluationResult">
       <Properties>
-        <Property name="text" type="java.lang.String" value="No valida"/>
+        <Property name="text" type="java.lang.String" value=" "/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
@@ -210,7 +210,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="editRegex">
       <Properties>
-        <Property name="text" type="java.lang.String" value="(a|b)*abb"/>
+        <Property name="text" type="java.lang.String" value="a+bc?aa*b(((d|e)|&amp;)+)?"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editRegexActionPerformed"/>

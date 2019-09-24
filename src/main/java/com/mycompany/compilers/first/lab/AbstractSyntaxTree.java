@@ -62,7 +62,8 @@ public class AbstractSyntaxTree {
                 if ((!isSyntaxToken && !nextIsSyntaxToken)
                         || (nextIsOpenParenthesis && !isOperator && !isOpenParenthesis)
                         || (isClosedParenthesis && !nextIsOperator && !nextIsClosedParenthesis)
-                        || (isOperandToken(regexArr[index + 1]) && !nextIsSyntaxToken)) {
+                        || (isOperandToken(regexArr[index + 1]) && !nextIsSyntaxToken)
+                        || (isOperandToken(regexArr[index]) && !nextIsSyntaxToken)) {
                     parsedRegex.add(regexArr[index]);
                     if (!regexArr[index + 1].equals(".")) {
                         parsedRegex.add("."); 
@@ -146,7 +147,7 @@ public class AbstractSyntaxTree {
     
     private boolean isSyntaxToken(String token) {
         return operators.containsKey(token) || token.equals("(")
-            || token.equals(")") || token.equals("&");
+            || token.equals(")");
     }
     
     private boolean isOperandToken(String token) {
@@ -162,12 +163,12 @@ public class AbstractSyntaxTree {
         return Math.max(getHeight(root.getLeftChild()), getHeight(root.getRightChild())) + 1;
     }
     
-    private void printTree(Node n) {
-        if (n == null) return;
-        printTree(n.getLeftChild());
-        System.out.println(n.getToken());
-        printTree(n.getRightChild());
-    }
+//    private void printTree(Node n) {
+//        if (n == null) return;
+//        printTree(n.getLeftChild());
+//        System.out.println(n.getToken());
+//        printTree(n.getRightChild());
+//    }
     
     public ArrayList<String[]> getTreePositions() {
         ArrayList<String[]> positions = new ArrayList<>();
@@ -198,7 +199,7 @@ public class AbstractSyntaxTree {
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
-            if (node.getToken().equals("*") || node.getToken().equals("+")) {
+            if (isOperandToken(node.getToken())) {
                 return getFirstPositions(node.getLeftChild());
             }
             if (node.getToken().equals("|")) {
@@ -217,6 +218,9 @@ public class AbstractSyntaxTree {
                     return getFirstPositions(node.getLeftChild());
                 }
             }
+            if (node.getToken().equals("&")) {
+                return new int[]{};
+            }
         }
         return new int[]{};
     }
@@ -230,7 +234,7 @@ public class AbstractSyntaxTree {
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
-            if (node.getToken().equals("*") || node.getToken().equals("+")) {
+            if (isOperandToken(node.getToken())) {
                 return getLastPositions(node.getLeftChild());
             }
             if (node.getToken().equals("|")) {
@@ -249,6 +253,9 @@ public class AbstractSyntaxTree {
                     return getLastPositions(node.getRightChild());
                 }
             }
+            if (node.getToken().equals("&")) {
+                return new int[]{};
+            }
         }
         return new int[]{};
     }
@@ -266,7 +273,7 @@ public class AbstractSyntaxTree {
     
     private int[] getNextPositions(ArrayList<Integer> nexPositions, Node tempNode, int position) {
         if (tempNode != null) {
-            if (tempNode.getToken().equals("*")
+            if (isOperandToken(tempNode.getToken())
                     && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) >= 0) {
                 addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getLeftChild()));
             }
@@ -274,14 +281,10 @@ public class AbstractSyntaxTree {
                     && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) >= 0) {
                 addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getRightChild()));
             }
-            if (tempNode.getLeftChild() != null
-                    && (tempNode.getLeftChild().getToken().equals("*")
-                        || tempNode.getLeftChild().getToken().equals("."))) {
+            if (tempNode.getLeftChild() != null) {
                 getNextPositions(nexPositions, tempNode.getLeftChild(), position);
             }
-            if (tempNode.getRightChild() != null
-                    && (tempNode.getRightChild().getToken().equals("*")
-                        || tempNode.getRightChild().getToken().equals("."))) {
+            if (tempNode.getRightChild() != null) {
                 getNextPositions(nexPositions, tempNode.getRightChild(), position);
             }
         }

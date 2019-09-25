@@ -24,6 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 public class AbstractSyntaxTree {
     private final Node root;
     private final String regex;
+    private int position;
+    
     private enum Operator {
         BAR(1), DOT(2), STAR(3), PLUS(3), QUESTION_MARK(3);
         final int precedence;
@@ -33,7 +35,7 @@ public class AbstractSyntaxTree {
     public AbstractSyntaxTree(String regex) {
         this.regex = regex;
         this.root = shuntingYard(this.regex);
-        printTree(root);
+//        printTree(root);
     }
     
     private final static Map<String, Operator> operators = new HashMap<String, Operator>() {{
@@ -82,7 +84,8 @@ public class AbstractSyntaxTree {
     }
     
     private Node shuntingYard(String regex) {
-        int index = 0, position = 1;
+        int index = 0;
+        position = 1;
         
         if (!regex.contains(")") && !regex.contains("(")) regex = "(" + regex + ")";
         regex += "#";
@@ -181,17 +184,21 @@ public class AbstractSyntaxTree {
         return this.root;
     }
     
+    public int getPosition() {
+        return this.position;
+    }
+    
     public int getHeight(Node root) {
         if (root == null) return 0;
         return Math.max(getHeight(root.getLeftChild()), getHeight(root.getRightChild())) + 1;
     }
     
-    private void printTree(Node n) {
-        if (n == null) return;
-        printTree(n.getLeftChild());
-        System.out.println(n.getToken());
-        printTree(n.getRightChild());
-    }
+//    private void printTree(Node n) {
+//        if (n == null) return;
+//        printTree(n.getLeftChild());
+//        System.out.println(n.getToken());
+//        printTree(n.getRightChild());
+//    }
     
     public ArrayList<String[]> getTreePositions() {
         ArrayList<String[]> positions = new ArrayList<>();
@@ -359,8 +366,7 @@ public class AbstractSyntaxTree {
     private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node) {
         if (node != null) {
             if (!operators.containsKey(node.getToken())
-                    && !nodes.contains(node)
-                    && !node.getToken().equals("&")) {
+                    && !nodes.contains(node)) {
                 nodes.add(node);
             }
             if (node.getLeftChild() != null) {

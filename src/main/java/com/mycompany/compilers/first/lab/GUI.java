@@ -291,10 +291,12 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_editEvaulateRegexActionPerformed
 
     private void btnEvaluateRegexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluateRegexActionPerformed
-        if (afd.validateString(editEvaulateRegex.getText())) {
-            textEvaluationResult.setText("Valida");
-        } else {
-            textEvaluationResult.setText("No Valida");
+        if (afd != null) {
+            if (afd.validateString(editEvaulateRegex.getText())) {
+                textEvaluationResult.setText("Valida");
+            } else {
+                textEvaluationResult.setText("No Valida");
+            }
         }
     }//GEN-LAST:event_btnEvaluateRegexActionPerformed
 

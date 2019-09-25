@@ -8,6 +8,7 @@ package com.mycompany.compilers.first.lab;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -116,18 +117,26 @@ public class AFD {
     }
     
     public boolean validateString(String regex) {
-//        regex = regex.replace("&", "");
+        int index = 0, statusIndex = 0, letterPos;
         List<String> statusesTokens = Arrays.asList(getStatusesTokens());
         List<String> alphabet = Arrays.asList(tree.getAlphabet());
-        int index = 0, statusIndex = 0, letterPos;
+        
         String[] regexArr = regex.split("");
         while (index < regexArr.length) {
             letterPos = alphabet.indexOf(regexArr[index]);
-            if (letterPos == -1 || statusIndex == -1) return false;
-//            System.out.println("NEXT_STATUS: " + trandD[statusIndex][letterPos] + " SYM: " + regexArr[index]);
+            if (letterPos == -1) return false;
+            
             statusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
-            index ++;
+            if (statusIndex == -1) break;
+
+            index++;
         }
-        return statusIndex == statusesTokens.size() - 1;
+        
+        return index == regexArr.length;
+    }
+    
+    private boolean isAFinalStatus(int statusIndex) {
+        return Arrays.stream(statuses.get(statusIndex).positions).boxed()
+            .collect(Collectors.toList()).contains(tree.getPosition() - 1);
     }
 }

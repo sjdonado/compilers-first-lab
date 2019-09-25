@@ -70,8 +70,9 @@ public class DrawTree extends JPanel {
                     && node.getRightChild() != null
                     && node.getLeftChild().getRightChild() != null
                     && node.getRightChild().getLeftChild() != null) {
-                nextYLeft -= (int) levelHeight / 1.5;
-                nextXLeft -= (int) levelHeight / 1.5;
+                nextYLeft -= (int) levelHeight / 1.4;
+                nextXLeft -= (int) levelHeight / 1.25;
+                nextXRight += (int) levelHeight / 1.25;
                 bias = !bias;
             }
             if (node.getLeftChild() != null) {

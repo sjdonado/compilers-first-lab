@@ -185,7 +185,7 @@ public class AbstractSyntaxTree {
     }
     
     public int getPosition() {
-        return this.position;
+        return this.position - 1;
     }
     
     public int getHeight(Node root) {
@@ -344,17 +344,17 @@ public class AbstractSyntaxTree {
     }
     
     public String getAlphabetAsString() {
-        return "{" + StringUtils.join(getAlphabet(), ",") + "}";
+        return "{" + StringUtils.join(getAlphabet(true), ",") + "}";
     }
     
-    public String[] getAlphabet() {
-        ArrayList<Node> nodes = nodesList(new ArrayList(), root);
+    public String[] getAlphabet(boolean epsilon) {
+        ArrayList<Node> nodes = nodesList(new ArrayList(), root, epsilon);
         nodes.remove(nodes.size() - 1);
         return nodes.stream().map(n -> n.getToken()).distinct().toArray(String[]::new);
     }
     
-    public Node[] getNodes() {
-        ArrayList<Node> nodes = nodesList(new ArrayList(), root);
+    public Node[] getNodes(boolean epsilon) {
+        ArrayList<Node> nodes = nodesList(new ArrayList(), root, epsilon);
         
         Comparator<Node> comparator = (Node n1, Node n2) ->
             (new Integer(n1.getPosition())).compareTo(new Integer(n2.getPosition()));
@@ -363,18 +363,21 @@ public class AbstractSyntaxTree {
         return nodes.stream().toArray(Node[]::new);
     }
     
-    private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node) {
+    private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node, boolean epsilon) {
         if (node != null) {
-            if (!operators.containsKey(node.getToken())
-                    && !nodes.contains(node)) {
+            if (epsilon && !operators.containsKey(node.getToken())
+                    && !nodes.contains(node))
                 nodes.add(node);
-            }
-            if (node.getLeftChild() != null) {
-                nodesList(nodes, node.getLeftChild());
-            }
-            if (node.getRightChild() != null) {
-                nodesList(nodes, node.getRightChild());
-            }
+            
+            if (!epsilon && !operators.containsKey(node.getToken())
+                    && !nodes.contains(node) && !node.getToken().equals("&"))
+                nodes.add(node);
+            
+            if (node.getLeftChild() != null)
+                nodesList(nodes, node.getLeftChild(), epsilon);
+            
+            if (node.getRightChild() != null)
+                nodesList(nodes, node.getRightChild(), epsilon);
         }
         return nodes;
     }

@@ -48,7 +48,7 @@ public class AFD {
         StatusD.indexCounter = 0;
         this.tree = tree;
         this.statuses = new ArrayList();
-        trandD = new String[1000][this.tree.getAlphabet().length];
+        trandD = new String[1000][this.tree.getAlphabet(false).length];
         statuses.add(new StatusD(this.tree.getFirstPositions(this.tree.getRoot())));
         build();
     }
@@ -56,8 +56,8 @@ public class AFD {
     private void build() {
         StatusD status, u;
         int tokenPos;
-        String[] alphabet = tree.getAlphabet();
-        Node[] nodes = tree.getNodes();
+        String[] alphabet = tree.getAlphabet(false);
+        Node[] nodes = tree.getNodes(false);
         while((status = getUnmarkedStatus()) != null) {
             status.marked = true;
             ArrayList<Integer> positions;
@@ -117,26 +117,27 @@ public class AFD {
     }
     
     public boolean validateString(String regex) {
-        int index = 0, statusIndex = 0, letterPos;
+        regex = regex.replaceAll("&", "");
+        int index = 0, statusIndex = 0, letterPos = -1;
         List<String> statusesTokens = Arrays.asList(getStatusesTokens());
-        List<String> alphabet = Arrays.asList(tree.getAlphabet());
+        List<String> alphabet = Arrays.asList(tree.getAlphabet(false));
         
         String[] regexArr = regex.split("");
         while (index < regexArr.length) {
             letterPos = alphabet.indexOf(regexArr[index]);
-            if (letterPos == -1) return false;
-            
-            statusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
-            if (statusIndex == -1) break;
-
+            if (letterPos != -1) {
+                statusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
+                if (statusIndex == -1) break;
+            }
             index++;
         }
-        
-        return index == regexArr.length;
+//        System.out.println("TEXT: " + regex + " IS A FINAL STATUS => " + isAFinalStatus(statusIndex)
+//                + " INDEX => " + index + " LENGTH => " + regexArr.length);
+        return index == regexArr.length && isAFinalStatus(statusIndex);
     }
     
     private boolean isAFinalStatus(int statusIndex) {
         return Arrays.stream(statuses.get(statusIndex).positions).boxed()
-            .collect(Collectors.toList()).contains(tree.getPosition() - 1);
+            .collect(Collectors.toList()).contains(tree.getPosition());
     }
 }

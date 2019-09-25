@@ -31,9 +31,9 @@ public class AbstractSyntaxTree {
     }
     
     public AbstractSyntaxTree(String regex) {
-        this.regex = regex + "#";
+        this.regex = regex;
         this.root = shuntingYard(this.regex);
-//        printTree(root);
+        printTree(root);
     }
     
     private final static Map<String, Operator> operators = new HashMap<String, Operator>() {{
@@ -50,7 +50,7 @@ public class AbstractSyntaxTree {
         while (index < regexArr.length) {
             if (index + 1 < regexArr.length) {
                 boolean isSyntaxToken = isSyntaxToken(regexArr[index]);
-                boolean isOperator = operators.containsKey(regexArr[index]);
+//                boolean isOperator = operators.containsKey(regexArr[index]);
                 boolean isOpenParenthesis = regexArr[index].equals("(");
                 boolean isClosedParenthesis = regexArr[index].equals(")");
                 
@@ -60,9 +60,8 @@ public class AbstractSyntaxTree {
                 boolean nextIsClosedParenthesis = regexArr[index + 1].equals(")");
                 
                 if ((!isSyntaxToken && !nextIsSyntaxToken)
-                        || (nextIsOpenParenthesis && !isOperator && !isOpenParenthesis)
-                        || (isClosedParenthesis && !nextIsOperator && !nextIsClosedParenthesis)
-//                        || (isClosedParenthesis && nextIsSyntaxToken)
+                        || (isClosedParenthesis && nextIsOpenParenthesis)
+                        || (isClosedParenthesis && !nextIsOperator && !isParenthesis(regexArr[index + 1]))
                         || (isOperandToken(regexArr[index + 1]) && !nextIsSyntaxToken)
                         || (isOperandToken(regexArr[index]) && !nextIsSyntaxToken)) {
                     parsedRegex.add(regexArr[index]);
@@ -84,6 +83,9 @@ public class AbstractSyntaxTree {
     
     private Node shuntingYard(String regex) {
         int index = 0, position = 1;
+        
+        if (!regex.contains(")") && !regex.contains("(")) regex = "(" + regex + ")";
+        regex += "#";
         ArrayList<String> parsedRegex = parseRegexArr(regex.split(""));
 
         Deque<Node> operandStack = new LinkedList<>();
@@ -113,7 +115,12 @@ public class AbstractSyntaxTree {
                     newOperand.setLeftChild(new Node(token, position));
                     index++;
                 } else {
-                    newOperand = new Node(token, position);
+                    if (token.equals("&")) {
+                        newOperand = new Node(token, -1);
+                        position--;
+                    } else {
+                        newOperand = new Node(token, position);
+                    }
                 }
                 operandStack.push(newOperand);
                 position++;
@@ -129,13 +136,28 @@ public class AbstractSyntaxTree {
     
     private void process(Deque<Node> operandStack, Deque<Node> operatorStack) {
         Node operator = operatorStack.pop();
-        if (operandStack.size() > 1) {
-            operator.setRightChild(operandStack.pop());
+        if (isOperandToken(operator.getToken())
+                && operandStack.size() > 1) {
             operator.setLeftChild(operandStack.pop());
+            
+            Node concat = new Node(".", -1);
+            if (operandStack.size() > 0) {
+                concat.setLeftChild(operandStack.pop());
+                concat.setRightChild(operator);
+            } else {
+                concat.setLeftChild(operator);
+            }
+            operandStack.push(concat); 
         } else {
-            operator.setLeftChild(operandStack.pop());
+            if (operandStack.size() > 1) {
+//                System.out.println("SET RIGHT CHILD => parent:" + operator.getToken() + " child : " + operandStack.peek().getToken());
+                operator.setRightChild(operandStack.pop());
+                operator.setLeftChild(operandStack.pop());
+            } else {
+                operator.setLeftChild(operandStack.pop());
+            }
+            operandStack.push(operator); 
         }
-        operandStack.push(operator); 
     }
     
     private boolean isHigherPrec(String op, String sub) {
@@ -151,7 +173,7 @@ public class AbstractSyntaxTree {
             || token.equals(")");
     }
     
-    private boolean isOperandToken(String token) {
+    public boolean isOperandToken(String token) {
         return token.equals("+") || token.equals("*") || token.equals("?");
     }
 
@@ -164,12 +186,12 @@ public class AbstractSyntaxTree {
         return Math.max(getHeight(root.getLeftChild()), getHeight(root.getRightChild())) + 1;
     }
     
-//    private void printTree(Node n) {
-//        if (n == null) return;
-//        printTree(n.getLeftChild());
-//        System.out.println(n.getToken());
-//        printTree(n.getRightChild());
-//    }
+    private void printTree(Node n) {
+        if (n == null) return;
+        printTree(n.getLeftChild());
+        System.out.println(n.getToken());
+        printTree(n.getRightChild());
+    }
     
     public ArrayList<String[]> getTreePositions() {
         ArrayList<String[]> positions = new ArrayList<>();
@@ -197,6 +219,9 @@ public class AbstractSyntaxTree {
     
     public int[] getFirstPositions(Node node) {
         if (node != null) {
+            if (node.getToken().equals("&")) {
+                return new int[]{};
+            }
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
@@ -219,9 +244,6 @@ public class AbstractSyntaxTree {
                     return getFirstPositions(node.getLeftChild());
                 }
             }
-            if (node.getToken().equals("&")) {
-                return new int[]{};
-            }
         }
         return new int[]{};
     }
@@ -232,6 +254,9 @@ public class AbstractSyntaxTree {
     
     private int[] getLastPositions(Node node) {
         if (node != null) {
+            if (node.getToken().equals("&")) {
+                return new int[]{};
+            }
             if (node.getLeftChild() == null && node.getRightChild() == null) {
                 return new int[]{ node.getPosition() };
             }
@@ -254,9 +279,6 @@ public class AbstractSyntaxTree {
                     return getLastPositions(node.getRightChild());
                 }
             }
-            if (node.getToken().equals("&")) {
-                return new int[]{};
-            }
         }
         return new int[]{};
     }
@@ -272,21 +294,21 @@ public class AbstractSyntaxTree {
         return nextPositions;
     }
     
-    private int[] getNextPositions(ArrayList<Integer> nexPositions, Node tempNode, int position) {
-        if (tempNode != null) {
-            if (isOperandToken(tempNode.getToken())
-                    && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) >= 0) {
-                addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getLeftChild()));
+    private int[] getNextPositions(ArrayList<Integer> nexPositions, Node node, int position) {
+        if (node != null) {
+            if (node.getToken().equals("*")
+                    && Arrays.binarySearch(getLastPositions(node.getLeftChild()), position) >= 0) {
+                addNextPositionsToArrayList(nexPositions, getFirstPositions(node.getLeftChild()));
             }
-            if (tempNode.getToken().equals(".")
-                    && Arrays.binarySearch(getLastPositions(tempNode.getLeftChild()), position) >= 0) {
-                addNextPositionsToArrayList(nexPositions, getFirstPositions(tempNode.getRightChild()));
+            if (node.getToken().equals(".")
+                    && Arrays.binarySearch(getLastPositions(node.getLeftChild()), position) >= 0) {
+                addNextPositionsToArrayList(nexPositions, getFirstPositions(node.getRightChild()));
             }
-            if (tempNode.getLeftChild() != null) {
-                getNextPositions(nexPositions, tempNode.getLeftChild(), position);
+            if (node.getLeftChild() != null) {
+                getNextPositions(nexPositions, node.getLeftChild(), position);
             }
-            if (tempNode.getRightChild() != null) {
-                getNextPositions(nexPositions, tempNode.getRightChild(), position);
+            if (node.getRightChild() != null) {
+                getNextPositions(nexPositions, node.getRightChild(), position);
             }
         }
         return nexPositions.stream().mapToInt(i->i).toArray();
@@ -337,7 +359,8 @@ public class AbstractSyntaxTree {
     private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node) {
         if (node != null) {
             if (!operators.containsKey(node.getToken())
-                    && !nodes.contains(node)) {
+                    && !nodes.contains(node)
+                    && !node.getToken().equals("&")) {
                 nodes.add(node);
             }
             if (node.getLeftChild() != null) {

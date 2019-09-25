@@ -30,56 +30,58 @@ public class DrawTree extends JPanel {
         //g.drawString(String.valueOf(tree.root.data), this.getWidth()/2, 30);
 //        drawNode(g, tree.getRoot(), 100, 50, 2);
         int levelHeight = (int) Math.floor(getHeight() / tree.getHeight(tree.getRoot()));
-        drawTree(g, 50, getWidth(), this.fm.getHeight() - levelHeight, levelHeight, tree.getRoot());
+        if (levelHeight > 50) levelHeight = 50;
+        drawTree(g, getWidth() - 250, 50 + this.fm.getHeight() - levelHeight, levelHeight, tree.getRoot(), false);
     }
 	
-    public void drawTree(Graphics g, int startWidth, int endWidth,
-        int startHeight, int levelHeight, Node node) {
-
-        int nextStartWidth, nextEndWidth, nextStartHeight;
+    public void drawTree(Graphics g, int x, int y, int levelHeight, Node node, boolean bias) {
+        int nextXLeft, nextXRight, nextYLeft, nextYRight;
         String token = node.getToken();
-        int tokenWidth = this.fm.stringWidth(token);
-        int x = getNodeXPosition(startWidth, endWidth) - tokenWidth / 2;
-        int y = startHeight + levelHeight + this.fm.getHeight() / 2;
+        int marginY = this.fm.getHeight() / 2;
         
         g.setFont(new Font("Courier", Font.BOLD, 18));
-        g.drawString(token, x, y);
+        g.drawString(token, x , y);
         
         g.setFont(new Font("Courier", Font.ITALIC, 10));
         if (node.getPosition() != -1) {
-            g.drawString(Integer.toString(node.getPosition()), x + tokenWidth / 2, y + (int) (this.fm.getHeight() / 1.5));
+            g.drawString(Integer.toString(node.getPosition()), x, y + marginY * 2);
         }
         
         g.setColor(Color.BLUE);
         String firstPositions = this.tree.getFirstPositionsAsString(node);
-        g.drawString(firstPositions, x + tokenWidth * 2,  y);
+        g.drawString(firstPositions, x + this.fm.stringWidth(token) * 2,  y);
         
         g.setColor(Color.RED);
         String lastPositions = this.tree.getLastPositionsAsString(node);
-        g.drawString(lastPositions, x - tokenWidth - this.fm.stringWidth(lastPositions),  y);
+        g.drawString(lastPositions, x - this.fm.stringWidth(token) - this.fm.stringWidth(lastPositions),  y);
         
         g.setColor(Color.BLACK);
+        
+        nextYLeft = y + levelHeight;
+        nextYRight = y + levelHeight;
+        nextXLeft = x - levelHeight * 2;
+        nextXRight = x + levelHeight * 2;
 
-        if (node.getLeftChild() != null) {
-            nextStartWidth = startWidth;
-            nextEndWidth = getNodeXPosition(startWidth, endWidth);
-            nextStartHeight = startHeight + levelHeight;
-            
-            g.drawLine(x, y + this.fm.getHeight() / 2, getNodeXPosition(nextStartWidth, nextEndWidth), nextStartHeight + levelHeight - this.fm.getHeight() / 2);
-            drawTree(g, nextStartWidth, nextEndWidth, nextStartHeight, levelHeight, node.getLeftChild());
-        }           
-            
-        if (node.getRightChild() != null) {
-            nextStartWidth = getNodeXPosition(startWidth, endWidth);
-            nextEndWidth = endWidth;
-            nextStartHeight = startHeight + levelHeight;
-
-            g.drawLine(x, y + this.fm.getHeight() / 2, getNodeXPosition(nextStartWidth, nextEndWidth), nextStartHeight + levelHeight - this.fm.getHeight() / 2);
-            drawTree(g, nextStartWidth, nextEndWidth, nextStartHeight, levelHeight, node.getRightChild());
+        if (tree.isOperandToken(node.getToken())) {
+            g.drawLine(x, y + marginY, x, nextYLeft - marginY);
+            drawTree(g, x, nextYLeft, levelHeight, node.getLeftChild(), bias);
+        } else {
+            if (node.getLeftChild() != null
+                    && node.getRightChild() != null
+                    && node.getLeftChild().getRightChild() != null
+                    && node.getRightChild().getLeftChild() != null) {
+                nextYLeft -= (int) levelHeight / 1.5;
+                nextXLeft -= (int) levelHeight / 1.5;
+                bias = !bias;
+            }
+            if (node.getLeftChild() != null) {
+                g.drawLine(x, y + marginY, nextXLeft, nextYLeft - marginY);
+                drawTree(g, nextXLeft, nextYLeft, levelHeight, node.getLeftChild(), bias);
+            }           
+            if (node.getRightChild() != null) {
+                g.drawLine(x, y + marginY, nextXRight, nextYRight - marginY);
+                drawTree(g, nextXRight, nextYRight, levelHeight, node.getRightChild(), bias);
+            }
         }
-    }
-    
-    private int getNodeXPosition(int startWidth, int endWidth) {
-        return (int) Math.floor((startWidth + endWidth) / 1.8);
     }
 }

@@ -7,8 +7,6 @@ package com.mycompany.compilers.first.lab;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -119,7 +117,7 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel3.setText("Tabla TRAND");
 
-        editRegex.setText("((a|c)*b((a|c)b|(a|c))*b?|b)");
+        editRegex.setText("(a|b)(e|d|a|b|c|d)");
         editRegex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editRegexActionPerformed(evt);
@@ -128,7 +126,7 @@ public class GUI extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(tableAFDStatuses);
 
-        jLabel4.setText("Estados AFD:");
+        jLabel4.setText("Estados AFD");
 
         jLabel5.setText("Alfabeto:");
 

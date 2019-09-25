@@ -116,6 +116,7 @@ public class AFD {
     }
     
     public boolean validateString(String regex) {
+//        regex = regex.replace("&", "");
         List<String> statusesTokens = Arrays.asList(getStatusesTokens());
         List<String> alphabet = Arrays.asList(tree.getAlphabet());
         int index = 0, statusIndex = 0, letterPos;

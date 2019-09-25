@@ -17,9 +17,9 @@ public class Node {
     private final int position;
     
     public Node(String token, int position) {
+//        this.parent = parent;
         this.rightChild = null;
         this.leftChild = null;
-//        this.parent = parent;
         this.token = token;
         this.position = position;
     }

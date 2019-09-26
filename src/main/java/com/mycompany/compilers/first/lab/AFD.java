@@ -117,22 +117,26 @@ public class AFD {
     }
     
     public boolean validateString(String regex) {
-        regex = regex.replaceAll("&", "");
-        int index = 0, statusIndex = 0, letterPos = -1;
+        int index = 0, statusIndex = 0, letterPos, nextStatusIndex;
         List<String> statusesTokens = Arrays.asList(getStatusesTokens());
         List<String> alphabet = Arrays.asList(tree.getAlphabet(false));
         
+        regex = regex.replaceAll("&", "");
+        regex = regex.replaceAll(" ", "");
         String[] regexArr = regex.split("");
+        if (regex.isBlank()) index++;
+        
         while (index < regexArr.length) {
             letterPos = alphabet.indexOf(regexArr[index]);
-            if (letterPos != -1) {
-                statusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
-                if (statusIndex == -1) break;
-            }
+            if (letterPos == -1) break;
+            nextStatusIndex = statusesTokens.indexOf(trandD[statusIndex][letterPos]);
+            if (nextStatusIndex == -1 ) break;
+            statusIndex = nextStatusIndex;
             index++;
         }
-//        System.out.println("TEXT: " + regex + " IS A FINAL STATUS => " + isAFinalStatus(statusIndex)
-//                + " INDEX => " + index + " LENGTH => " + regexArr.length);
+        
+        System.out.println("TEXT: " + regex + " IS A FINAL STATUS => " + isAFinalStatus(statusIndex)
+                + " INDEX => " + index + " LENGTH => " + regexArr.length);
         return index == regexArr.length && isAFinalStatus(statusIndex);
     }
     

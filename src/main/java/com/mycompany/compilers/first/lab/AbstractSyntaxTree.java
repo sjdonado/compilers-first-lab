@@ -229,9 +229,6 @@ public class AbstractSyntaxTree {
             if (node.getToken().equals("&")) {
                 return new int[]{};
             }
-            if (node.getLeftChild() == null && node.getRightChild() == null) {
-                return new int[]{ node.getPosition() };
-            }
             if (isOperandToken(node.getToken())) {
                 return getFirstPositions(node.getLeftChild());
             }
@@ -251,6 +248,9 @@ public class AbstractSyntaxTree {
                     return getFirstPositions(node.getLeftChild());
                 }
             }
+            if (node.getLeftChild() == null && node.getRightChild() == null) {
+                return new int[]{ node.getPosition() };
+            }
         }
         return new int[]{};
     }
@@ -263,9 +263,6 @@ public class AbstractSyntaxTree {
         if (node != null) {
             if (node.getToken().equals("&")) {
                 return new int[]{};
-            }
-            if (node.getLeftChild() == null && node.getRightChild() == null) {
-                return new int[]{ node.getPosition() };
             }
             if (isOperandToken(node.getToken())) {
                 return getLastPositions(node.getLeftChild());
@@ -285,6 +282,9 @@ public class AbstractSyntaxTree {
                 } else {
                     return getLastPositions(node.getRightChild());
                 }
+            }
+            if (node.getLeftChild() == null && node.getRightChild() == null) {
+                return new int[]{ node.getPosition() };
             }
         }
         return new int[]{};
@@ -328,7 +328,9 @@ public class AbstractSyntaxTree {
     }
     
     private boolean isNullable(Node node) {
-        if (node == null || node.getToken().equals("*") || node.getToken().equals("&")) {
+        if (node == null || node.getToken().equals("*")
+                || node.getToken().equals("?")
+                || node.getToken().equals("&")) {
             return true;
         }
         if (node.getToken().equals("|")) {

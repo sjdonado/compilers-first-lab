@@ -189,9 +189,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="editEvaulateRegex">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="abbabb"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editEvaulateRegexActionPerformed"/>
       </Events>
@@ -215,9 +212,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="editRegex">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="(a|b)(e|d|a|b|c|d)"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editRegexActionPerformed"/>
       </Events>

@@ -99,7 +99,6 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel2.setText("Reconocer cadena:");
 
-        editEvaulateRegex.setText("abbabb");
         editEvaulateRegex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editEvaulateRegexActionPerformed(evt);
@@ -117,7 +116,6 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel3.setText("Tabla TRAND");
 
-        editRegex.setText("(a|b)(e|d|a|b|c|d)");
         editRegex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editRegexActionPerformed(evt);

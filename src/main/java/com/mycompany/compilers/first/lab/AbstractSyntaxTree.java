@@ -303,7 +303,7 @@ public class AbstractSyntaxTree {
     
     private int[] getNextPositions(ArrayList<Integer> nexPositions, Node node, int position) {
         if (node != null) {
-            if (node.getToken().equals("*")
+            if (isOperandToken(node.getToken())
                     && Arrays.binarySearch(getLastPositions(node.getLeftChild()), position) >= 0) {
                 addNextPositionsToArrayList(nexPositions, getFirstPositions(node.getLeftChild()));
             }

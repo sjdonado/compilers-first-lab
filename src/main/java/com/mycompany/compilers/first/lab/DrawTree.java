@@ -31,7 +31,7 @@ public class DrawTree extends JPanel {
 //        drawNode(g, tree.getRoot(), 100, 50, 2);
         int levelHeight = (int) Math.floor(getHeight() / tree.getHeight(tree.getRoot()));
         if (levelHeight > 50) levelHeight = 50;
-        drawTree(g, getWidth() - 250, 50 + this.fm.getHeight() - levelHeight, levelHeight, tree.getRoot(), false);
+        drawTree(g, getWidth() - 400, 50 + this.fm.getHeight() - levelHeight, levelHeight, tree.getRoot(), false);
     }
 	
     public void drawTree(Graphics g, int x, int y, int levelHeight, Node node, boolean bias) {
@@ -71,7 +71,7 @@ public class DrawTree extends JPanel {
                     && node.getLeftChild().getRightChild() != null
                     && node.getRightChild().getLeftChild() != null) {
                 nextYLeft -= (int) levelHeight / 1.4;
-                nextXLeft -= (int) levelHeight / 1.25;
+                nextXLeft -= (int) levelHeight / 1.2;
                 nextXRight += (int) levelHeight / 1.25;
                 bias = !bias;
             }

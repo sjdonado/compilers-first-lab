@@ -346,17 +346,17 @@ public class AbstractSyntaxTree {
     }
     
     public String getAlphabetAsString() {
-        return "{" + StringUtils.join(getAlphabet(true), ",") + "}";
+        return "{" + StringUtils.join(getAlphabet(), ",") + "}";
     }
     
-    public String[] getAlphabet(boolean epsilon) {
-        ArrayList<Node> nodes = nodesList(new ArrayList(), root, epsilon);
+    public String[] getAlphabet() {
+        ArrayList<Node> nodes = nodesList(new ArrayList(), root);
         nodes.remove(nodes.size() - 1);
         return nodes.stream().map(n -> n.getToken()).distinct().toArray(String[]::new);
     }
     
-    public Node[] getNodes(boolean epsilon) {
-        ArrayList<Node> nodes = nodesList(new ArrayList(), root, epsilon);
+    public Node[] getNodes() {
+        ArrayList<Node> nodes = nodesList(new ArrayList(), root);
         
         Comparator<Node> comparator = (Node n1, Node n2) ->
             (new Integer(n1.getPosition())).compareTo(new Integer(n2.getPosition()));
@@ -365,21 +365,17 @@ public class AbstractSyntaxTree {
         return nodes.stream().toArray(Node[]::new);
     }
     
-    private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node, boolean epsilon) {
+    private ArrayList<Node> nodesList(ArrayList<Node> nodes, Node node) {
         if (node != null) {
-            if (epsilon && !operators.containsKey(node.getToken())
-                    && !nodes.contains(node))
-                nodes.add(node);
-            
-            if (!epsilon && !operators.containsKey(node.getToken())
+            if (!operators.containsKey(node.getToken())
                     && !nodes.contains(node) && !node.getToken().equals("&"))
                 nodes.add(node);
             
             if (node.getLeftChild() != null)
-                nodesList(nodes, node.getLeftChild(), epsilon);
+                nodesList(nodes, node.getLeftChild());
             
             if (node.getRightChild() != null)
-                nodesList(nodes, node.getRightChild(), epsilon);
+                nodesList(nodes, node.getRightChild());
         }
         return nodes;
     }

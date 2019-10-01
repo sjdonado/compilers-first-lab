@@ -254,7 +254,7 @@ public class GUI extends javax.swing.JFrame {
         
 //        AFD
         String[][] trandD = afd.getTrandD();
-        String[] alphabet = tree.getAlphabet(false);
+        String[] alphabet = tree.getAlphabet();
         String[][] statuses = afd.getStatuses();
         
         jTableAFDStatuses = new DefaultTableModel(statuses.length, 2);
